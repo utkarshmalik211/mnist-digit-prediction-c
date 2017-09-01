@@ -43,3 +43,28 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
 
 	return nn;
 }
+
+void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
+	uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
+
+	Layer *il = createInputLayer(inpCount);
+	memcpy(nn->layers,il,nn->inpLayerSize);
+	free(il);
+
+	subptr += nn->inpLayerSize; // move pointer to begining of hidden layer
+
+	Layer *hl = createLayer(hidCount, inpCount);
+	memcpy(subptr,hl,nn->hidLayerSize);
+	free(hl);
+
+	subptr += nn->hidLayerSize;
+
+	Layer *ol = createLayer(outCount,hidCount);
+	memcpy(subptr,ol,nn->outLayerSize);
+	free(ol);
+
+}
+
+Layer *createInputLayer(){
+
+}
