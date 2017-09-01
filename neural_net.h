@@ -56,7 +56,6 @@ void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 	Layer *hl = createLayer(hidCount, inpCount);
 	memcpy(subptr,hl,nn->hidLayerSize);
 	free(hl);
-
 	subptr += nn->hidLayerSize;
 
 	Layer *ol = createLayer(outCount,hidCount);
@@ -65,6 +64,28 @@ void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 
 }
 
-Layer *createInputLayer(){
+Layer *createInputLayer(int inpCount){
+	int inpNodeSize = sizeof(Node);
+	int inpLayerSize= sizeof(Layer) + (inpCount * inpNodeSize);
 
+	Layer *il = malloc(inpLayerSize);
+	il->ncount = inpCount;
+
+	Node iln;
+	iln.bias = 0;
+	iln.output = 0;
+	iln.wcount = 0;
+
+	uint8_t *sbptr = (uint8_t*) il->nodes;
+
+	for (int i = 0; i < il->ncount; i++){
+		memcpy(sbptr,&iln,inpNodeSize);
+		sbptr += inpNodeSize;
+	}
+	return il;
+}
+
+Layer *createLayer(int nodeCount,int weightCount){
+	int nodeSize = sizeof(Node) + (weightCount * sizeof(double));
+	Layer *l = (Layer*)malloc(sizeof(Layer)+(nodeCount*nodeSize));
 }
