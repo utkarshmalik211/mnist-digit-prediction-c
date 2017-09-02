@@ -1,8 +1,17 @@
+/*
+	Author - Utkarsh Malik
+	Date 2nd september 
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
 typedef struct Node{
 	double bias;
 	double output;
 	int wcount;
-	double weights[];
+	double weights[]; // considered as struct hack in c , we wont specify the array element count but will manually allocate space for
 } Node;
 
 typedef struct Layer{
@@ -44,26 +53,6 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
 	return nn;
 }
 
-void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
-	uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
-
-	Layer *il = createInputLayer(inpCount);
-	memcpy(nn->layers,il,nn->inpLayerSize);
-	free(il);
-
-	subptr += nn->inpLayerSize; // move pointer to begining of hidden layer
-
-	Layer *hl = createLayer(hidCount, inpCount);
-	memcpy(subptr,hl,nn->hidLayerSize);
-	free(hl);
-	subptr += nn->hidLayerSize;
-
-	Layer *ol = createLayer(outCount,hidCount);
-	memcpy(subptr,ol,nn->outLayerSize);
-	free(ol);
-
-}
-
 Layer *createInputLayer(int inpCount){
 	int inpNodeSize = sizeof(Node);
 	int inpLayerSize= sizeof(Layer) + (inpCount * inpNodeSize);
@@ -79,13 +68,62 @@ Layer *createInputLayer(int inpCount){
 	uint8_t *sbptr = (uint8_t*) il->nodes;
 
 	for (int i = 0; i < il->ncount; i++){
-		memcpy(sbptr,&iln,inpNodeSize);
+
+		memcpy(sbptr,&iln,inpNodeSize); // copy individual node to layer
+
 		sbptr += inpNodeSize;
 	}
 	return il;
 }
 
 Layer *createLayer(int nodeCount,int weightCount){
+
 	int nodeSize = sizeof(Node) + (weightCount * sizeof(double));
+	
 	Layer *l = (Layer*)malloc(sizeof(Layer)+(nodeCount*nodeSize));
+
+	l->ncount = nodeCount;
+
+	Node *dn = (Node*)malloc(sizeof(Node) + ((weightCount)*sizeof(double)));
+	dn->bias = 0;
+	dn->output = 0;
+	dn->wcount = weightCount;
+
+	for (int i = 0; i < weightCount; i++){
+		dn->weights[i]=0;
+	}
+
+	uint8_t *sbptr = (uint8_t*) l->nodes;
+
+	for (int j = 0; j < weightCount; j++){
+		memcpy(sbptr+(j*nodeSize),dn,nodeSize);
+	}
+
+	free(dn);
+
+	return l;
 }
+
+
+
+void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
+	uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
+
+	Layer *il = createInputLayer(inpCount);
+	memcpy(nn->layers,il,nn->inpLayerSize); // copy il's content to nn
+	free(il);
+
+	sbptr += nn->inpLayerSize; // move pointer to begining of hidden layer
+
+	Layer *hl = createLayer(hidCount, inpCount);
+	memcpy(sbptr,hl,nn->hidLayerSize);
+	free(hl);
+
+	sbptr += nn->hidLayerSize; // move to begining of output layer
+
+	Layer *ol = createLayer(outCount,hidCount);
+	memcpy(sbptr,ol,nn->outLayerSize);
+	free(ol);
+
+}
+

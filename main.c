@@ -4,5 +4,5 @@
 
 void main(){
 	Network *a = createNetwork(748,20,10);
-	printf("%d",a->inpNodeSize);
+	printf("%d\n",a->inpNodeSize);
 }
