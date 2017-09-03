@@ -1,11 +1,16 @@
 /*
 	Author - Utkarsh Malik
-	Date 2nd september 
+	Date - 3rd september 
 */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <math.h>
+
+typedef enum LayerType {INPUT, HIDDEN, OUTPUT} LayerType;
 
 typedef struct Node{
 	double bias;
@@ -66,6 +71,11 @@ Layer *createInputLayer(int inpCount){
 	iln.wcount = 0;
 
 	uint8_t *sbptr = (uint8_t*) il->nodes;
+	// single byte pointer is simply a pointer pointing to 
+	// memory blocks of byte size 1. I.e. we can easily 
+	// move the pointer throughout the address space either by
+    // incrementing it via pointer++
+	// or by adding the number of bytes that we want 
 
 	for (int i = 0; i < il->ncount; i++){
 
@@ -95,7 +105,7 @@ Layer *createLayer(int nodeCount,int weightCount){
 
 	uint8_t *sbptr = (uint8_t*) l->nodes;
 
-	for (int j = 0; j < weightCount; j++){
+	for (int j = 0; j < nodeCount; j++){
 		memcpy(sbptr+(j*nodeSize),dn,nodeSize);
 	}
 
@@ -107,12 +117,12 @@ Layer *createLayer(int nodeCount,int weightCount){
 
 
 void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
-	uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
 
 	Layer *il = createInputLayer(inpCount);
 	memcpy(nn->layers,il,nn->inpLayerSize); // copy il's content to nn
 	free(il);
 
+	uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
 	sbptr += nn->inpLayerSize; // move pointer to begining of hidden layer
 
 	Layer *hl = createLayer(hidCount, inpCount);
@@ -127,3 +137,53 @@ void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 
 }
 
+Layer *getLayer(Network *nn,LayerType ltype){
+	Layer *l;
+	switch (ltype){
+		case INPUT:{
+			l=nn->layers;
+			break;
+		}
+		case HIDDEN:{
+			uint8_t *sbptr = (uint8_t*)nn->layers;
+			sbptr += nn->inpLayerSize;
+			l=(Layer*)sbptr;
+			break;
+		}
+		default:{
+			uint8_t *sbptr = (uint8_t*)nn->layers;
+			sbptr += nn->inpLayerSize + nn->hidLayerSize;
+			l=(Layer*)sbptr;
+			break;
+		}
+	}
+	return l;
+}
+//random weights initialization 
+
+void initWeights(Network *nn ,LayerType ltype){
+	int nodeSize = 0;
+	if(ltype == HIDDEN)
+		nodeSize=nn->hidNodeSize;
+	else
+		nodeSize=nn->outNodeSize;
+
+	Layer *l = getLayer(nn, ltype);
+
+	uint8_t *sbptr = (uint8_t*) l->nodes;
+
+	for (int o=0; o<l->ncount;o++){
+    
+        Node *n = (Node *)sbptr;
+        
+        for (int i=0; i<n->wcount; i++){
+            n->weights[i] = rand()/(double)(RAND_MAX);
+        }
+        
+        // init bias weight
+        n->bias =  rand()/(double)(RAND_MAX);
+        
+        sbptr += nodeSize;
+    }
+    
+}
