@@ -3,14 +3,9 @@
 	Date - 3rd september 
 */
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <math.h>
-
 typedef enum LayerType {INPUT, HIDDEN, OUTPUT} LayerType;
+
+typedef enum ActFctType {SIGMOID, TANH} ActFctType;
 
 typedef struct Node{
 	double bias;
@@ -31,6 +26,9 @@ typedef struct Network{
 	int hidLayerSize;
 	int outNodeSize;
 	int outLayerSize;
+	ActFctType hidLayerActType;
+	ActFctType outLayerActType;
+	double learningRate;
 	Layer layers[];
 } Network;
 
@@ -54,7 +52,9 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
     nn->hidLayerSize  = hidLayerSize;
     nn->outNodeSize   = outNodeSize;
     nn->outLayerSize  = outLayerSize;
-
+    nn->hidLayerActType = SIGMOID;
+    nn->outLayerActType = SIGMOID;
+    nn->learningRate = 0.5;
 	return nn;
 }
 
@@ -159,6 +159,18 @@ Layer *getLayer(Network *nn,LayerType ltype){
 	}
 	return l;
 }
+
+Node *getNode(Layer *l, int nodeId) {
+    
+    int nodeSize = sizeof(Node) + (l->nodes[0].wcount * sizeof(double));
+    uint8_t *sbptr = (uint8_t*) l->nodes;
+    
+    sbptr += nodeId * nodeSize;
+    
+    return (Node*) sbptr;
+}
+
+
 //random weights initialization 
 
 void initWeights(Network *nn ,LayerType ltype){
