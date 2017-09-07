@@ -1,7 +1,7 @@
 #include<math.h>
 
 void feedInput(Network *nn,Vector *v){
-	Layer *il = nn->layers;
+	Layer *il = getLayer(nn,INPUT);
 
 	Node *iln = il->nodes;
 
@@ -68,7 +68,7 @@ void calcLayer(Network *nn,LayerType ltype){
 	for(int i = 0;i<l->ncount;i++){
 		clacNodeOutput(nn,ltype,i);
 		activateNode(nn,ltype,i);
-	} 
+	}
 }
 
 void feedForwardNetwork(Network *nn){
@@ -87,19 +87,19 @@ double getActFctDerivative(Network *nn,LayerType ltype ,double outVal){
 
 	if (ltype==HIDDEN) actFct = nn->hidLayerActType;
                   else actFct = nn->outLayerActType;
-    
+
     if (actFct==TANH) dVal = 1-pow(tanh(outVal),2);
                  else dVal = outVal * (1-outVal);
-    
+
     return dVal;
 
-} 
+}
 
 void updateNodeWeights(Network *nn, LayerType ltype, int id, double error){
-    
+
     Layer *updateLayer = getLayer(nn, ltype);
     Node *updateNode = getNode(updateLayer, id);
-    
+
     Layer *prevLayer;
     int prevLayerNodeSize = 0;
     if (ltype==HIDDEN) {
@@ -109,90 +109,90 @@ void updateNodeWeights(Network *nn, LayerType ltype, int id, double error){
         prevLayer = getLayer(nn, HIDDEN);
         prevLayerNodeSize = nn->hidNodeSize;
     }
-    
+
     uint8_t *sbptr = (uint8_t*) prevLayer->nodes;
-    
+
     for (int i=0; i<updateNode->wcount; i++){
         Node *prevLayerNode = (Node*)sbptr;
         updateNode->weights[i] += (nn->learningRate * prevLayerNode->output * error);
         sbptr += prevLayerNodeSize;
     }
-    
+
     // update bias weight
     updateNode->bias += (nn->learningRate * 1 * error);
-    
+
 }
 
 void backPropagateOutputLayer(Network *nn, int targetClassification){
-    
+
     Layer *ol = getLayer(nn, OUTPUT);
-    
+
     for (int o=0;o<ol->ncount;o++){
-        
+
         Node *on = getNode(ol,o);
-        
+
         int targetOutput = (o==targetClassification)?1:0;
-        
+
         double errorDelta = targetOutput - on -> output;
         double errorSignal = errorDelta * getActFctDerivative(nn, OUTPUT, on->output);
-        
+
         updateNodeWeights(nn, OUTPUT, o, errorSignal);
-        
-    } 
+
+    }
 }
 
 void backPropagateHiddenLayer(Network *nn, int targetClassification){
-    
+
     Layer *ol = getLayer(nn, OUTPUT);
     Layer *hl = getLayer(nn, HIDDEN);
-    
+
     for (int h=0;h<hl->ncount;h++){
         Node *hn = getNode(hl,h);
-        
+
         double outputcellerrorsum = 0;
-        
+
         for (int o=0;o<ol->ncount;o++){
-            
+
             Node *on = getNode(ol,o);
-            
+
             int targetOutput = (o==targetClassification)?1:0;
-            
+
             double errorDelta = targetOutput - on->output;
             double errorSignal = errorDelta * getActFctDerivative(nn, OUTPUT, on->output);
-            
+
             outputcellerrorsum += errorSignal * on->weights[h];
         }
-        
+
         double hiddenErrorSignal = outputcellerrorsum * getActFctDerivative(nn, HIDDEN, hn->output);
-        
+
         updateNodeWeights(nn, HIDDEN, h, hiddenErrorSignal);
     }
-    
+
 }
 
 void backPropagateNetwork(Network *nn, int targetClassification){
-    
+
     backPropagateOutputLayer(nn, targetClassification);
-    
-    backPropagateHiddenLayer(nn, targetClassification); 
+
+    backPropagateHiddenLayer(nn, targetClassification);
 }
 
 int getNetworkClassification(Network *nn){
-    
+
     Layer *l = getLayer(nn, OUTPUT);
-    
+
     double maxOut = 0;
     int maxInd = 0;
-    
-    for (int i=0; i<l->ncount; i++){
-        
+
+    for (int i=0; i < l->ncount; i++){
+
         Node *on = getNode(l,i);
-        
+
         if (on->output > maxOut){
             maxOut = on->output;
             maxInd = i;
         }
     }
-    
+
     return maxInd;
 }
