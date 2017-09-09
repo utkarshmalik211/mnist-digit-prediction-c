@@ -1,11 +1,15 @@
+// include basic c functions
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+// include opencv
 #include <cv.h>
 #include <highgui.h>
+// include maths functions
 #include <math.h>
 
+//include neural network functions
 #include "neural_net.h"
 #include "read_mnist.h"
 #include "train_net.h"
@@ -18,20 +22,20 @@ void main(int argc, char *argv[]){
 	FILE *testLableFile = openMNISTImageFile("data/t10k-labels-idx1-ubyte");
 
 	IplImage* img = 0;
-  	int height,width,step,channels;
-  	uchar *data;
+	int height,width,step,channels;
+	uchar *data;
 
 	if(argc<2){
 	printf("Usage: main <image-file-name>\n\7");
 	exit(0);
 	}
 
-  	// load an image
-  	img=cvLoadImage(argv[1],CV_LOAD_IMAGE_GRAYSCALE);
-  	if(!img){
-    	printf("Could not load image file: %s\n",argv[1]);
-    	exit(0);
-  	}
+	// load an image
+	img=cvLoadImage(argv[1],CV_LOAD_IMAGE_GRAYSCALE);
+	if(!img){
+  	printf("Could not load image file: %s\n",argv[1]);
+  	exit(0);
+	}
 
 	Network *a = createNetwork(748,20,10);
 	initNetwork(a,748,20,10);
@@ -58,7 +62,7 @@ void main(int argc, char *argv[]){
 	// 	feedInput(a,image);
 	// 	feedForwardNetwork(a)
 	// 	// backPropagateNetwork(a,(int)lbl);
-  //       // printf("\rIn progress %d", i/600);
+ //       // printf("\rIn progress %d", i/600);
 	// 	printf("%d   %d\n",getNetworkClassification(a),lbl);
 	// }
 	double t = cvThreshold(img,img,128,255,0);
@@ -85,18 +89,83 @@ void main(int argc, char *argv[]){
 			}
 	  }
 	}
+	double sum1,sum2;
+	int drow[28],dcol[28];
+	for(int i=0;i<height;i++){
+		sum1=0.0;sum2=0.0;
+	  for(int j=0;j<width;j++){
+			sum1+=c[i][j];
+			sum2+=c[j][i];
+		}
+		if(sum1==0){
+			drow[i]=1;
+		}else{
+			drow[i]=0;
+		}
+		if(sum2==0){
+			dcol[i]=1;
+		}else{
+			dcol[i]=0;
+		}
+	}
+	int row_z=0,col_z=0;
+	for(int i=0;i<28;i++){
+		if(drow[i]==0)
+			row_z++;
+		if(dcol[i]==0)
+			col_z++;
+	}
+	int first_0_row,last_0_row,first_0_col,last_0_col;
+	for(int i=0;i<28;i++){
+		if(drow[i]==0){
+			first_0_row=i;
+			break;}
+	}
+	for(int i=0;i<28;i++){
+		if(dcol[i]==0){
+			first_0_col=i;
+			break;
+		}
+	}
+	for(int i=27;i>0;i--){
+		if(drow[i]==0){
+			last_0_row=i;
+			break;
+		}
+	}
+	for(int i=27;i>0;i--){
+		if(dcol[i]==0){
+			last_0_col=i;
+			break;
+		}
+	}
+	int l,m,p_image[row_z][col_z];
+	printf("%d %d\n",row_z,col_z);
+
+	for(int i=first_0_row;i<=last_0_row;i++){
+		for(int j=first_0_col;j<=last_0_col;j++){
+			l=i-first_0_row;m=j-first_0_col;
+			p_image[l][m]=c[i][j];
+			printf("%d",p_image[l][m]);
+		}
+		printf("\n");
+	}
+	// CvMat* cropped = cvCreateMat(col_z, row_z, CV_32FC1,&p_image);
 	Vector *image1 = (Vector*)malloc(sizeof(double)+(sizeof(double)*784));
 	image1->size = 28*28;
 	for(int j=0;j<image1->size;j++){
 	   image1->vals[j]=b[j];
 	  }
-	for(int j=0;j<image1->size;j++){
-		printf("%d",(int)image1->vals[j]);
-		 if(j%28==0){
-			if(j!=0)
-		 		printf("\n");
-		}
-	}
+	// for(int j=0;j<image1->size;j++){
+	// 	 if(j%28==0){
+	// 		if(j!=0)
+	// 	 		printf("\n");
+	// 	}
+	// 	printf("%d",(int)image1->vals[j]);
+	// }
+	printf("\n");
+	printf("%d %d %d %d",first_0_row,last_0_row,first_0_col,last_0_col);
+
 	// feedInput(a,image1);
 	// feedForwardNetwork(a);
 	// printf("%d\n",getNetworkClassification(a));
