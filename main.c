@@ -85,7 +85,7 @@ void main(int argc, char *argv[]){
 	  for(int j=0;j<width;j++){
 	    for(int k=0;k<channels;k++){
 	      data[i*step+j*channels+k]=255-data[i*step+j*channels+k];
-	      b[i*28 + j] = c[i][j] = (data[i*step+j*channels+k]) ? 1:0 ;
+	     	c[i][j] = (data[i*step+j*channels+k]) ? 1:0 ;
 			}
 	  }
 	}
@@ -150,19 +150,51 @@ void main(int argc, char *argv[]){
 		}
 		printf("\n");
 	}
-	// CvMat* cropped = cvCreateMat(col_z, row_z, CV_32FC1,&p_image);
+	IplImage* crpd= cvCreateImage(cvSize( col_z, row_z), img->depth, img->nChannels );
+	// get the image data
+	height    = crpd->height;
+	width     = crpd->width;
+	step      = crpd->widthStep;
+	channels  = crpd->nChannels;
+	data      = (uchar *)crpd->imageData;
+
+	for(int i=0;i<height;i++){
+		for(int j=0;j<width;j++){
+			for(int k=0;k<channels;k++){
+				data[i*step+j*channels+k]=(p_image[i][j])? 255 : 0;
+			}
+		}
+	}
+
+	IplImage* crp= cvCreateImage(cvSize( 20,20), img->depth, img->nChannels );
+	cvResize(crpd, crp,CV_INTER_AREA );
+
+	height    = crp->height;
+	width     = crp->width;
+	step      = crp->widthStep;
+	channels  = crp->nChannels;
+	data      = (uchar *)crp->imageData;
+	int crp_image[20][20];
+	for(int i=0;i<height;i++){
+		for(int j=0;j<width;j++){
+			for(int k=0;k<channels;k++){
+				crp_image[i][j]= ((int)data[i*step+j*channels+k]) ? 1 : 0;
+			}
+		}
+	}
+
 	Vector *image1 = (Vector*)malloc(sizeof(double)+(sizeof(double)*784));
 	image1->size = 28*28;
 	for(int j=0;j<image1->size;j++){
 	   image1->vals[j]=b[j];
 	  }
-	// for(int j=0;j<image1->size;j++){
-	// 	 if(j%28==0){
-	// 		if(j!=0)
-	// 	 		printf("\n");
-	// 	}
-	// 	printf("%d",(int)image1->vals[j]);
-	// }
+	for(int j=0;j<image1->size;j++){
+		 if(j%20==0){
+			if(j!=0)
+		 		printf("\n");
+		}
+		printf("%d",(int)image1->vals[j]);
+	}
 	printf("\n");
 	printf("%d %d %d %d",first_0_row,last_0_row,first_0_col,last_0_col);
 
@@ -170,11 +202,11 @@ void main(int argc, char *argv[]){
 	// feedForwardNetwork(a);
 	// printf("%d\n",getNetworkClassification(a));
 	// show the image
-	cvShowImage("mainWin", img );
+	cvShowImage("mainWin", crp );
 	// wait for a key
 	cvWaitKey(0);
 	// release the image
-	cvReleaseImage(&img );
+	cvReleaseImage(&crp );
 	printf("\n");
 
 	}
