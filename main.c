@@ -76,9 +76,6 @@ void main(int argc, char *argv[]){
 	channels  = img->nChannels;
 	data      = (uchar *)img->imageData;
 	printf("Processing a %dx%d image with %d channels\n",height,width,channels);
-	// create a window
-	cvNamedWindow("mainWin", CV_WND_PROP_FULLSCREEN);
-	cvMoveWindow("mainWin", 100, 100);
 	int b[28*28],c[28][28];
 	// invert the image
 	for(int i=0;i<height;i++){
@@ -146,9 +143,8 @@ void main(int argc, char *argv[]){
 		for(int j=first_0_col;j<=last_0_col;j++){
 			l=i-first_0_row;m=j-first_0_col;
 			p_image[l][m]=c[i][j];
-			printf("%d",p_image[l][m]);
+			// printf("%d",p_image[l][m]);
 		}
-		printf("\n");
 	}
 	IplImage* crpd= cvCreateImage(cvSize( col_z, row_z), img->depth, img->nChannels );
 	// get the image data
@@ -182,14 +178,28 @@ void main(int argc, char *argv[]){
 			}
 		}
 	}
-
+	for(int i=0;i<28;i++){
+		for(int j=0;j<28;j++){
+			c[i][j]=0;
+		}
+	}
+	for(int i=0;i<20;i++){
+		for(int j=0;j<20;j++){
+			c[i+4][j+4]=crp_image[i][j];
+		}
+	}
+	for(int i=0;i<28;i++){
+		for(int j=0;j<28;j++){
+			b[i*28+j]=c[i][j];
+		}
+	}
 	Vector *image1 = (Vector*)malloc(sizeof(double)+(sizeof(double)*784));
 	image1->size = 28*28;
 	for(int j=0;j<image1->size;j++){
 	   image1->vals[j]=b[j];
 	  }
 	for(int j=0;j<image1->size;j++){
-		 if(j%20==0){
+		 if(j%28==0){
 			if(j!=0)
 		 		printf("\n");
 		}
@@ -201,12 +211,4 @@ void main(int argc, char *argv[]){
 	// feedInput(a,image1);
 	// feedForwardNetwork(a);
 	// printf("%d\n",getNetworkClassification(a));
-	// show the image
-	cvShowImage("mainWin", crp );
-	// wait for a key
-	cvWaitKey(0);
-	// release the image
-	cvReleaseImage(&crp );
-	printf("\n");
-
 	}
