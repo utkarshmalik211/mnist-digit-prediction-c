@@ -98,10 +98,6 @@ void backPropagateHiddenLayer(Network *nn, int targetClassification){
     }
 
 }
-
-
-
-
 /**
  * @brief Back propagates network error in output layer
  * @param nn A pointer to the NN
@@ -116,7 +112,7 @@ void backPropagateOutputLayer(Network *nn, int targetClassification){
 
         Node *on = getNode(ol,o);
 
-        int targetOutput = (o==targetClassification)?1:0;
+        int targetOutput = (o==targetClassification) ? 1 : 0;
 
         double errorDelta = targetOutput - on->output;
         double errorSignal = errorDelta * getActFctDerivative(nn, OUTPUT, on->output);
@@ -126,16 +122,11 @@ void backPropagateOutputLayer(Network *nn, int targetClassification){
     }
 
 }
-
-
-
-
 /**
  * @brief Back propagates network error from output layer to hidden layer
  * @param nn A pointer to the NN
  * @param targetClassification Correct classification (=label) of the input stream
  */
-
 void backPropagateNetwork(Network *nn, int targetClassification){
 
     backPropagateOutputLayer(nn, targetClassification);
@@ -165,7 +156,7 @@ void activateNode(Network *nn, LayerType ltype, int id){
     else actFct = nn->outLayerActType;
 
     if (actFct==TANH)   n->output = tanh(n->output);
-    else n->output = 1 / (1 + (exp((double)-n->output)) );
+    else n->output = 1 / (1 + (exp((double)(0-(n->output)))) );
 
 }
 

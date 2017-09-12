@@ -1,6 +1,6 @@
 /*
 	Author - Utkarsh Malik
-	Date - 3rd september 
+	Date - 3rd september
 */
 
 typedef enum LayerType {INPUT, HIDDEN, OUTPUT} LayerType;
@@ -42,19 +42,19 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
 
 	int outWeightsCount = hidCount;
 	int outNodeSize  = sizeof(Node) + (outWeightsCount * sizeof(double));
-	int outLayerSize = sizeof(Layer) + (outNodeSize * outCount);
+	int outLayerSize = sizeof(Layer) + (outCount * outNodeSize);
 
 	Network *nn = (Network*)malloc(sizeof(Network) + inpLayerSize + hidLayerSize + outLayerSize);
 
 	nn->inpNodeSize   = inpNodeSize;
-    nn->inpLayerSize  = inpLayerSize;
-    nn->hidNodeSize   = hidNodeSize;
-    nn->hidLayerSize  = hidLayerSize;
-    nn->outNodeSize   = outNodeSize;
-    nn->outLayerSize  = outLayerSize;
-    nn->hidLayerActType = SIGMOID;
-    nn->outLayerActType = SIGMOID;
-    nn->learningRate = 0.5;
+  nn->inpLayerSize  = inpLayerSize;
+  nn->hidNodeSize   = hidNodeSize;
+  nn->hidLayerSize  = hidLayerSize;
+  nn->outNodeSize   = outNodeSize;
+  nn->outLayerSize  = outLayerSize;
+  nn->hidLayerActType = SIGMOID;
+  nn->outLayerActType = SIGMOID;
+  nn->learningRate = 0.2;
 	return nn;
 }
 
@@ -71,11 +71,11 @@ Layer *createInputLayer(int inpCount){
 	iln.wcount = 0;
 
 	uint8_t *sbptr = (uint8_t*) il->nodes;
-	// single byte pointer is simply a pointer pointing to 
-	// memory blocks of byte size 1. I.e. we can easily 
+	// single byte pointer is simply a pointer pointing to
+	// memory blocks of byte size 1. I.e. we can easily
 	// move the pointer throughout the address space either by
     // incrementing it via pointer++
-	// or by adding the number of bytes that we want 
+	// or by adding the number of bytes that we want
 
 	for (int i = 0; i < il->ncount; i++){
 
@@ -87,11 +87,8 @@ Layer *createInputLayer(int inpCount){
 }
 
 Layer *createLayer(int nodeCount,int weightCount){
-
 	int nodeSize = sizeof(Node) + (weightCount * sizeof(double));
-	
 	Layer *l = (Layer*)malloc(sizeof(Layer)+(nodeCount*nodeSize));
-
 	l->ncount = nodeCount;
 
 	Node *dn = (Node*)malloc(sizeof(Node) + ((weightCount)*sizeof(double)));
@@ -161,17 +158,17 @@ Layer *getLayer(Network *nn,LayerType ltype){
 }
 
 Node *getNode(Layer *l, int nodeId) {
-    
+
     int nodeSize = sizeof(Node) + (l->nodes[0].wcount * sizeof(double));
     uint8_t *sbptr = (uint8_t*) l->nodes;
-    
+
     sbptr += nodeId * nodeSize;
-    
+
     return (Node*) sbptr;
 }
 
 
-//random weights initialization 
+//random weights initialization
 
 void initWeights(Network *nn ,LayerType ltype){
 	int nodeSize = 0;
@@ -185,17 +182,17 @@ void initWeights(Network *nn ,LayerType ltype){
 	uint8_t *sbptr = (uint8_t*) l->nodes;
 
 	for (int o=0; o<l->ncount;o++){
-    
+
         Node *n = (Node *)sbptr;
-        
+
         for (int i=0; i<n->wcount; i++){
             n->weights[i] = rand()/(double)(RAND_MAX);
         }
-        
+
         // init bias weight
         n->bias =  rand()/(double)(RAND_MAX);
-        
+
         sbptr += nodeSize;
     }
-    
+
 }

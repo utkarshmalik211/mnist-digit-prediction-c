@@ -39,16 +39,9 @@ typedef struct Vector{
 Vector *getVectorFromImage(MNIST_Image *img){
     Vector *v = (Vector*)malloc(sizeof(Vector)+(28*28*sizeof(double)));
     v->size = 28*28;
-
     for(int i = 0 ; i <v->size;i++){
         v->vals[i] = img->pixel[i] ? 1 : 0;
-        if(i%28==0){
-   			if(i!=0)
-   		 		printf("\n");
-   		}
-   		printf("%d",(int)v->vals[i]);
     }
-    printf("\n\n");
     return v;
 }
 
@@ -142,9 +135,6 @@ MNIST_Image getImage(FILE *imageFile){
 
     return img;
 }
-
-/*Returns the next label in the given MNIST label file
- */
 
 MNIST_Label getLabel(FILE *labelFile){
 
