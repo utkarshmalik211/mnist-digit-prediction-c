@@ -15,42 +15,42 @@
 
 
 void main(int argc, char *argv[]){
-	FILE *trainImageFile = openMNISTImageFile("data/train-images-idx3-ubyte");
-	FILE *trainLableFile = openMNISTImageFile("data/train-labels-idx1-ubyte");
+								FILE *trainImageFile = openMNISTImageFile("data/train-images-idx3-ubyte");
+								FILE *trainLableFile = openMNISTImageFile("data/train-labels-idx1-ubyte");
 
-	FILE *testImageFile = openMNISTImageFile("data/t10k-images-idx3-ubyte");
-	FILE *testLableFile = openMNISTImageFile("data/t10k-labels-idx1-ubyte");
+								FILE *testImageFile = openMNISTImageFile("data/t10k-images-idx3-ubyte");
+								FILE *testLableFile = openMNISTImageFile("data/t10k-labels-idx1-ubyte");
 
-	Network *a = createNetwork(748,20,10);
-	initNetwork(a,748,20,10);
-	initWeights(a,HIDDEN);
-	initWeights(a,OUTPUT);
+								Network *a = createNetwork(748,20,10);
+								initNetwork(a,748,20,10);
+								initWeights(a,HIDDEN);
+								initWeights(a,OUTPUT);
 
-	for (int i = 0; i < 50000; i++){
-		MNIST_Image img1 = getImage(trainImageFile);
-		MNIST_Label lbl = getLabel(trainLableFile);
-		Vector *image = getVectorFromImage(&img1);
-		feedInput(a,image);
-		feedForwardNetwork(a);
-		backPropagateNetwork(a,(int)lbl);
-        // printf("\rIn progress %d", i/600);
-    // printf("%d   %d\n",getNetworkClassification(a),lbl);
-	}
-	printf("\n");
-	// for (int i = 0; i < 20; i++){
-	// 	MNIST_Image img = getImage(testImageFile);
-	// 	MNIST_Label lbl = getLabel(testLableFile);
-	// 	Vector *image = getVectorFromImage(&img);
-	// 	feedInput(a,image);
-	// 	feedForwardNetwork(a);
-	// 	// backPropagateNetwork(a,(int)lbl);
-  //      // printf("\rIn progress %d", i/600);
-	// 	printf("%d   %d\n",getNetworkClassification(a),lbl);
-	// }
+								for (int i = 0; i < 60000; i++) {
+																MNIST_Image img1 = getImage(trainImageFile);
+																MNIST_Label lbl = getLabel(trainLableFile);
+																Vector *image = getVectorFromImage(&img1);
+																feedInput(a,image);
+																feedForwardNetwork(a);
+																backPropagateNetwork(a,(int)lbl);
+																printf("\rIn progress %d", i/600);
+																// printf("%d   %d\n",getNetworkClassification(a),lbl);
+								}
+								printf("\n");
+								// for (int i = 0; i < 20; i++){
+								//  MNIST_Image img = getImage(testImageFile);
+								//  MNIST_Label lbl = getLabel(testLableFile);
+								//  Vector *image = getVectorFromImage(&img);
+								//  feedInput(a,image);
+								//  feedForwardNetwork(a);
+								//  // backPropagateNetwork(a,(int)lbl);
+								//      // printf("\rIn progress %d", i/600);
+								//  printf("%d   %d\n",getNetworkClassification(a),lbl);
+								// }
 
-  Vector *image = convert_to_MNIST_Image(argv[1]);
+								Vector *image = convert_to_MNIST_Image(argv[1]);
 
-	feedInput(a,image);
-	feedForwardNetwork(a);
-	printf("%d\n",getNetworkClassification(a));
-	}
+								feedInput(a,image);
+								feedForwardNetwork(a);
+								printf("%d\n",getNetworkClassification(a));
+}

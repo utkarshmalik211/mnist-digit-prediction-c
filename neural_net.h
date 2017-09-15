@@ -1,198 +1,198 @@
 /*
-	Author - Utkarsh Malik
-	Date - 3rd september
-*/
+   Author - Utkarsh Malik
+   Date - 3rd september
+ */
 
 typedef enum LayerType {INPUT, HIDDEN, OUTPUT} LayerType;
 
 typedef enum ActFctType {SIGMOID, TANH} ActFctType;
 
-typedef struct Node{
-	double bias;
-	double output;
-	int wcount;
-	double weights[]; // considered as struct hack in c , we wont specify the array element count but will manually allocate space for
+typedef struct Node {
+								double bias;
+								double output;
+								int wcount;
+								double weights[]; // considered as struct hack in c , we wont specify the array element count but will manually allocate space for
 } Node;
 
-typedef struct Layer{
-	int ncount;
-	Node nodes[];
+typedef struct Layer {
+								int ncount;
+								Node nodes[];
 } Layer;
 
-typedef struct Network{
-	int inpNodeSize;
-	int inpLayerSize;
-	int hidNodeSize;
-	int hidLayerSize;
-	int outNodeSize;
-	int outLayerSize;
-	ActFctType hidLayerActType;
-	ActFctType outLayerActType;
-	double learningRate;
-	Layer layers[];
+typedef struct Network {
+								int inpNodeSize;
+								int inpLayerSize;
+								int hidNodeSize;
+								int hidLayerSize;
+								int outNodeSize;
+								int outLayerSize;
+								ActFctType hidLayerActType;
+								ActFctType outLayerActType;
+								double learningRate;
+								Layer layers[];
 } Network;
 
 Network *createNetwork(int inpCount,int hidCount,int outCount){
-	int inpNodeSize  = sizeof(Node);
-	int inpLayerSize = sizeof(Layer) + (inpCount * inpNodeSize);
+								int inpNodeSize  = sizeof(Node);
+								int inpLayerSize = sizeof(Layer) + (inpCount * inpNodeSize);
 
-	int hidWeightsCount = inpCount;
-	int hidNodeSize  = 	sizeof(Node) + (hidWeightsCount * sizeof(double));
-	int hidLayerSize = sizeof(Layer) + (hidCount * hidNodeSize);
+								int hidWeightsCount = inpCount;
+								int hidNodeSize  =  sizeof(Node) + (hidWeightsCount * sizeof(double));
+								int hidLayerSize = sizeof(Layer) + (hidCount * hidNodeSize);
 
-	int outWeightsCount = hidCount;
-	int outNodeSize  = sizeof(Node) + (outWeightsCount * sizeof(double));
-	int outLayerSize = sizeof(Layer) + (outCount * outNodeSize);
+								int outWeightsCount = hidCount;
+								int outNodeSize  = sizeof(Node) + (outWeightsCount * sizeof(double));
+								int outLayerSize = sizeof(Layer) + (outCount * outNodeSize);
 
-	Network *nn = (Network*)malloc(sizeof(Network) + inpLayerSize + hidLayerSize + outLayerSize);
+								Network *nn = (Network*)malloc(sizeof(Network) + inpLayerSize + hidLayerSize + outLayerSize);
 
-	nn->inpNodeSize   = inpNodeSize;
-  nn->inpLayerSize  = inpLayerSize;
-  nn->hidNodeSize   = hidNodeSize;
-  nn->hidLayerSize  = hidLayerSize;
-  nn->outNodeSize   = outNodeSize;
-  nn->outLayerSize  = outLayerSize;
-  nn->hidLayerActType = SIGMOID;
-  nn->outLayerActType = SIGMOID;
-  nn->learningRate = 0.2;
-	return nn;
+								nn->inpNodeSize   = inpNodeSize;
+								nn->inpLayerSize  = inpLayerSize;
+								nn->hidNodeSize   = hidNodeSize;
+								nn->hidLayerSize  = hidLayerSize;
+								nn->outNodeSize   = outNodeSize;
+								nn->outLayerSize  = outLayerSize;
+								nn->hidLayerActType = SIGMOID;
+								nn->outLayerActType = SIGMOID;
+								nn->learningRate = 0.2;
+								return nn;
 }
 
 Layer *createInputLayer(int inpCount){
-	int inpNodeSize = sizeof(Node);
-	int inpLayerSize= sizeof(Layer) + (inpCount * inpNodeSize);
+								int inpNodeSize = sizeof(Node);
+								int inpLayerSize= sizeof(Layer) + (inpCount * inpNodeSize);
 
-	Layer *il = malloc(inpLayerSize);
-	il->ncount = inpCount;
+								Layer *il = malloc(inpLayerSize);
+								il->ncount = inpCount;
 
-	Node iln;
-	iln.bias = 0;
-	iln.output = 0;
-	iln.wcount = 0;
+								Node iln;
+								iln.bias = 0;
+								iln.output = 0;
+								iln.wcount = 0;
 
-	uint8_t *sbptr = (uint8_t*) il->nodes;
-	// single byte pointer is simply a pointer pointing to
-	// memory blocks of byte size 1. I.e. we can easily
-	// move the pointer throughout the address space either by
-    // incrementing it via pointer++
-	// or by adding the number of bytes that we want
+								uint8_t *sbptr = (uint8_t*) il->nodes;
+								// single byte pointer is simply a pointer pointing to
+								// memory blocks of byte size 1. I.e. we can easily
+								// move the pointer throughout the address space either by
+								// incrementing it via pointer++
+								// or by adding the number of bytes that we want
 
-	for (int i = 0; i < il->ncount; i++){
+								for (int i = 0; i < il->ncount; i++) {
 
-		memcpy(sbptr,&iln,inpNodeSize); // copy individual node to layer
+																memcpy(sbptr,&iln,inpNodeSize); // copy individual node to layer
 
-		sbptr += inpNodeSize;
-	}
-	return il;
+																sbptr += inpNodeSize;
+								}
+								return il;
 }
 
 Layer *createLayer(int nodeCount,int weightCount){
-	int nodeSize = sizeof(Node) + (weightCount * sizeof(double));
-	Layer *l = (Layer*)malloc(sizeof(Layer)+(nodeCount*nodeSize));
-	l->ncount = nodeCount;
+								int nodeSize = sizeof(Node) + (weightCount * sizeof(double));
+								Layer *l = (Layer*)malloc(sizeof(Layer)+(nodeCount*nodeSize));
+								l->ncount = nodeCount;
 
-	Node *dn = (Node*)malloc(sizeof(Node) + ((weightCount)*sizeof(double)));
-	dn->bias = 0;
-	dn->output = 0;
-	dn->wcount = weightCount;
+								Node *dn = (Node*)malloc(sizeof(Node) + ((weightCount)*sizeof(double)));
+								dn->bias = 0;
+								dn->output = 0;
+								dn->wcount = weightCount;
 
-	for (int i = 0; i < weightCount; i++){
-		dn->weights[i]=0;
-	}
+								for (int i = 0; i < weightCount; i++) {
+																dn->weights[i]=0;
+								}
 
-	uint8_t *sbptr = (uint8_t*) l->nodes;
+								uint8_t *sbptr = (uint8_t*) l->nodes;
 
-	for (int j = 0; j < nodeCount; j++){
-		memcpy(sbptr+(j*nodeSize),dn,nodeSize);
-	}
+								for (int j = 0; j < nodeCount; j++) {
+																memcpy(sbptr+(j*nodeSize),dn,nodeSize);
+								}
 
-	free(dn);
+								free(dn);
 
-	return l;
+								return l;
 }
 
 
 
 void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 
-	Layer *il = createInputLayer(inpCount);
-	memcpy(nn->layers,il,nn->inpLayerSize); // copy il's content to nn
-	free(il);
+								Layer *il = createInputLayer(inpCount);
+								memcpy(nn->layers,il,nn->inpLayerSize); // copy il's content to nn
+								free(il);
 
-	uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
-	sbptr += nn->inpLayerSize; // move pointer to begining of hidden layer
+								uint8_t *sbptr = (uint8_t*) nn->layers; //single byte pointer for fast access
+								sbptr += nn->inpLayerSize; // move pointer to begining of hidden layer
 
-	Layer *hl = createLayer(hidCount, inpCount);
-	memcpy(sbptr,hl,nn->hidLayerSize);
-	free(hl);
+								Layer *hl = createLayer(hidCount, inpCount);
+								memcpy(sbptr,hl,nn->hidLayerSize);
+								free(hl);
 
-	sbptr += nn->hidLayerSize; // move to begining of output layer
+								sbptr += nn->hidLayerSize; // move to begining of output layer
 
-	Layer *ol = createLayer(outCount,hidCount);
-	memcpy(sbptr,ol,nn->outLayerSize);
-	free(ol);
+								Layer *ol = createLayer(outCount,hidCount);
+								memcpy(sbptr,ol,nn->outLayerSize);
+								free(ol);
 
 }
 
 Layer *getLayer(Network *nn,LayerType ltype){
-	Layer *l;
-	switch (ltype){
-		case INPUT:{
-			l=nn->layers;
-			break;
-		}
-		case HIDDEN:{
-			uint8_t *sbptr = (uint8_t*)nn->layers;
-			sbptr += nn->inpLayerSize;
-			l=(Layer*)sbptr;
-			break;
-		}
-		default:{
-			uint8_t *sbptr = (uint8_t*)nn->layers;
-			sbptr += nn->inpLayerSize + nn->hidLayerSize;
-			l=(Layer*)sbptr;
-			break;
-		}
-	}
-	return l;
+								Layer *l;
+								switch (ltype) {
+								case INPUT: {
+																l=nn->layers;
+																break;
+								}
+								case HIDDEN: {
+																uint8_t *sbptr = (uint8_t*)nn->layers;
+																sbptr += nn->inpLayerSize;
+																l=(Layer*)sbptr;
+																break;
+								}
+								default: {
+																uint8_t *sbptr = (uint8_t*)nn->layers;
+																sbptr += nn->inpLayerSize + nn->hidLayerSize;
+																l=(Layer*)sbptr;
+																break;
+								}
+								}
+								return l;
 }
 
 Node *getNode(Layer *l, int nodeId) {
 
-    int nodeSize = sizeof(Node) + (l->nodes[0].wcount * sizeof(double));
-    uint8_t *sbptr = (uint8_t*) l->nodes;
+								int nodeSize = sizeof(Node) + (l->nodes[0].wcount * sizeof(double));
+								uint8_t *sbptr = (uint8_t*) l->nodes;
 
-    sbptr += nodeId * nodeSize;
+								sbptr += nodeId * nodeSize;
 
-    return (Node*) sbptr;
+								return (Node*) sbptr;
 }
 
 
 //random weights initialization
 
-void initWeights(Network *nn ,LayerType ltype){
-	int nodeSize = 0;
-	if(ltype == HIDDEN)
-		nodeSize=nn->hidNodeSize;
-	else
-		nodeSize=nn->outNodeSize;
+void initWeights(Network *nn,LayerType ltype){
+								int nodeSize = 0;
+								if(ltype == HIDDEN)
+																nodeSize=nn->hidNodeSize;
+								else
+																nodeSize=nn->outNodeSize;
 
-	Layer *l = getLayer(nn, ltype);
+								Layer *l = getLayer(nn, ltype);
 
-	uint8_t *sbptr = (uint8_t*) l->nodes;
+								uint8_t *sbptr = (uint8_t*) l->nodes;
 
-	for (int o=0; o<l->ncount;o++){
+								for (int o=0; o<l->ncount; o++) {
 
-        Node *n = (Node *)sbptr;
+																Node *n = (Node *)sbptr;
 
-        for (int i=0; i<n->wcount; i++){
-            n->weights[i] = rand()/(double)(RAND_MAX);
-        }
+																for (int i=0; i<n->wcount; i++) {
+																								n->weights[i] = rand()/(double)(RAND_MAX);
+																}
 
-        // init bias weight
-        n->bias =  rand()/(double)(RAND_MAX);
+																// init bias weight
+																n->bias =  rand()/(double)(RAND_MAX);
 
-        sbptr += nodeSize;
-    }
+																sbptr += nodeSize;
+								}
 
 }

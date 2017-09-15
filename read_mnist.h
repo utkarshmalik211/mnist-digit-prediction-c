@@ -15,109 +15,109 @@ typedef struct MNIST_LabelFileHeader MNIST_LabelFileHeader;
 typedef struct MNIST_Image MNIST_Image;
 typedef uint8_t MNIST_Label;
 
-typedef struct MNIST_Image{
-    uint8_t pixel[28*28];
+typedef struct MNIST_Image {
+        uint8_t pixel[28*28];
 }  MNIST_Image;
 
-typedef struct MNIST_ImageFileHeader{
-    uint32_t magicNumber;
-    uint32_t maxImages;
-    uint32_t imgWidth;
-    uint32_t imgHeight;
+typedef struct MNIST_ImageFileHeader {
+        uint32_t magicNumber;
+        uint32_t maxImages;
+        uint32_t imgWidth;
+        uint32_t imgHeight;
 } MNIST_ImageFileHeader;
 
-typedef struct MNIST_LabelFileHeader{
-    uint32_t magicNumber;
-    uint32_t maxImages;
+typedef struct MNIST_LabelFileHeader {
+        uint32_t magicNumber;
+        uint32_t maxImages;
 } MNIST_LabelFileHeader;
 
-typedef struct Vector{
-    int size;
-    double vals[];
+typedef struct Vector {
+        int size;
+        double vals[];
 } Vector;
 
 Vector *getVectorFromImage(MNIST_Image *img){
-    Vector *v = (Vector*)malloc(sizeof(Vector)+(28*28*sizeof(double)));
-    v->size = 28*28;
-    for(int i = 0 ; i <v->size;i++){
-        v->vals[i] = img->pixel[i] ? 1 : 0;
-    }
-    return v;
+        Vector *v = (Vector*)malloc(sizeof(Vector)+(28*28*sizeof(double)));
+        v->size = 28*28;
+        for(int i = 0; i <v->size; i++) {
+                v->vals[i] = img->pixel[i] ? 1 : 0;
+        }
+        return v;
 }
 
 uint32_t flipBytes(uint32_t n){
 
-    uint32_t b0,b1,b2,b3;
+        uint32_t b0,b1,b2,b3;
 
-    b0 = (n & 0x000000ff) <<  24u;
-    b1 = (n & 0x0000ff00) <<   8u;
-    b2 = (n & 0x00ff0000) >>   8u;
-    b3 = (n & 0xff000000) >>  24u;
+        b0 = (n & 0x000000ff) <<  24u;
+        b1 = (n & 0x0000ff00) <<   8u;
+        b2 = (n & 0x00ff0000) >>   8u;
+        b3 = (n & 0xff000000) >>  24u;
 
-    return (b0 | b1 | b2 | b3);
+        return (b0 | b1 | b2 | b3);
 
 }
 
 void readImageFileHeader(FILE *imageFile, MNIST_ImageFileHeader *ifh){
 
-    ifh->magicNumber = 0;
-    ifh->maxImages   = 0;
-    ifh->imgWidth    = 0;
-    ifh->imgHeight   = 0;
+        ifh->magicNumber = 0;
+        ifh->maxImages   = 0;
+        ifh->imgWidth    = 0;
+        ifh->imgHeight   = 0;
 
-    fread(&ifh->magicNumber, 4, 1, imageFile);
-    ifh->magicNumber = flipBytes(ifh->magicNumber);
+        fread(&ifh->magicNumber, 4, 1, imageFile);
+        ifh->magicNumber = flipBytes(ifh->magicNumber);
 
-    fread(&ifh->maxImages, 4, 1, imageFile);
-    ifh->maxImages = flipBytes(ifh->maxImages);
+        fread(&ifh->maxImages, 4, 1, imageFile);
+        ifh->maxImages = flipBytes(ifh->maxImages);
 
-    fread(&ifh->imgWidth, 4, 1, imageFile);
-    ifh->imgWidth = flipBytes(ifh->imgWidth);
+        fread(&ifh->imgWidth, 4, 1, imageFile);
+        ifh->imgWidth = flipBytes(ifh->imgWidth);
 
-    fread(&ifh->imgHeight, 4, 1, imageFile);
-    ifh->imgHeight = flipBytes(ifh->imgHeight);
+        fread(&ifh->imgHeight, 4, 1, imageFile);
+        ifh->imgHeight = flipBytes(ifh->imgHeight);
 }
 
 void readLabelFileHeader(FILE *imageFile, MNIST_LabelFileHeader *lfh){
 
-    lfh->magicNumber =0;
-    lfh->maxImages   =0;
+        lfh->magicNumber =0;
+        lfh->maxImages   =0;
 
-    fread(&lfh->magicNumber, 4, 1, imageFile);
-    lfh->magicNumber = flipBytes(lfh->magicNumber);
+        fread(&lfh->magicNumber, 4, 1, imageFile);
+        lfh->magicNumber = flipBytes(lfh->magicNumber);
 
-    fread(&lfh->maxImages, 4, 1, imageFile);
-    lfh->maxImages = flipBytes(lfh->maxImages);
+        fread(&lfh->maxImages, 4, 1, imageFile);
+        lfh->maxImages = flipBytes(lfh->maxImages);
 
 }
 FILE *openMNISTImageFile(char *fileName){
 
-    FILE *imageFile;
-    imageFile = fopen (fileName, "rb");
-    if (imageFile == NULL) {
-        printf("Abort! Could not fine MNIST IMAGE file: %s\n",fileName);
-        exit(0);
-    }
+        FILE *imageFile;
+        imageFile = fopen (fileName, "rb");
+        if (imageFile == NULL) {
+                printf("Abort! Could not fine MNIST IMAGE file: %s\n",fileName);
+                exit(0);
+        }
 
-    MNIST_ImageFileHeader imageFileHeader;
-    readImageFileHeader(imageFile, &imageFileHeader);
+        MNIST_ImageFileHeader imageFileHeader;
+        readImageFileHeader(imageFile, &imageFileHeader);
 
-    return imageFile;
+        return imageFile;
 }
 
 FILE *openMNISTLabelFile(char *fileName){
 
-    FILE *labelFile;
-    labelFile = fopen (fileName, "rb");
-    if (labelFile == NULL) {
-        printf("Abort! Could not find MNIST LABEL file: %s\n",fileName);
-        exit(0);
-    }
+        FILE *labelFile;
+        labelFile = fopen (fileName, "rb");
+        if (labelFile == NULL) {
+                printf("Abort! Could not find MNIST LABEL file: %s\n",fileName);
+                exit(0);
+        }
 
-    MNIST_LabelFileHeader labelFileHeader;
-    readLabelFileHeader(labelFile, &labelFileHeader);
+        MNIST_LabelFileHeader labelFileHeader;
+        readLabelFileHeader(labelFile, &labelFileHeader);
 
-    return labelFile;
+        return labelFile;
 }
 
 /* Returns the next image in the given MNIST image file
@@ -125,26 +125,26 @@ FILE *openMNISTLabelFile(char *fileName){
 
 MNIST_Image getImage(FILE *imageFile){
 
-    MNIST_Image img;
-    size_t result;
-    result = fread(&img, sizeof(img), 1, imageFile);
-    if (result!=1) {
-        printf("\nError when reading IMAGE file! Abort!\n");
-        exit(1);
-    }
+        MNIST_Image img;
+        size_t result;
+        result = fread(&img, sizeof(img), 1, imageFile);
+        if (result!=1) {
+                printf("\nError when reading IMAGE file! Abort!\n");
+                exit(1);
+        }
 
-    return img;
+        return img;
 }
 
 MNIST_Label getLabel(FILE *labelFile){
 
-    MNIST_Label lbl;
-    size_t result;
-    result = fread(&lbl, sizeof(lbl), 1, labelFile);
-    if (result!=1) {
-        printf("\nError when reading LABEL file! Abort!\n");
-        exit(1);
-    }
+        MNIST_Label lbl;
+        size_t result;
+        result = fread(&lbl, sizeof(lbl), 1, labelFile);
+        if (result!=1) {
+                printf("\nError when reading LABEL file! Abort!\n");
+                exit(1);
+        }
 
-    return lbl;
+        return lbl;
 }
