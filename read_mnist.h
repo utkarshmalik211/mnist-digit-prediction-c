@@ -36,6 +36,11 @@ typedef struct Vector {
         double vals[];
 } Vector;
 
+void clearScreen(){
+    printf("\e[1;1H\e[2J");
+}
+
+
 Vector *getVectorFromImage(MNIST_Image *img){
         Vector *v = (Vector*)malloc(sizeof(Vector)+(28*28*sizeof(double)));
         v->size = 28*28;

@@ -54,7 +54,7 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
 								nn->outLayerSize  = outLayerSize;
 								nn->hidLayerActType = SIGMOID;
 								nn->outLayerActType = SIGMOID;
-								nn->learningRate = 0.2;
+								nn->learningRate = 0.5;
 								return nn;
 }
 
@@ -184,11 +184,9 @@ void initWeights(Network *nn,LayerType ltype){
 								for (int o=0; o<l->ncount; o++) {
 
 																Node *n = (Node *)sbptr;
-
 																for (int i=0; i<n->wcount; i++) {
 																								n->weights[i] = rand()/(double)(RAND_MAX);
 																}
-
 																// init bias weight
 																n->bias =  rand()/(double)(RAND_MAX);
 

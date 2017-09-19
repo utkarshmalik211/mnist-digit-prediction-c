@@ -169,7 +169,12 @@ Vector* convert_to_MNIST_Image(char* path){
                         if(j!=0)
                                 printf("\n");
                 }
-                printf("%d",(int)image1->vals[j]);
+                if((int)image1->vals[j]==1){
+                  printf("%d",(int)image1->vals[j]);
+                }
+                else{
+                  printf(" ");
+                }
         }
         printf("\nVectorizing image...Done\n");
 
