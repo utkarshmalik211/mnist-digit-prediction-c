@@ -59,13 +59,13 @@ static void draw_brush (GtkWidget *widget,
         /* Paint to the surface, where we store our state */
         cr = cairo_create (surface);
 
-        cairo_rectangle (cr, x - 3, y - 3, 6, 6);
+        cairo_rectangle (cr, x, y, 6, 6);
         cairo_fill (cr);
 
         cairo_destroy (cr);
 
         /* Now invalidate the affected region of the drawing area. */
-        gtk_widget_queue_draw_area (widget, x - 3, y - 3, 6, 6);
+        gtk_widget_queue_draw_area (widget, x, y, 6, 6);
 }
 
 /* Handle button press events by either drawing a rectangle
@@ -87,6 +87,7 @@ static gboolean button_press_event_cb (GtkWidget      *widget,
         }
         else if (event->button == GDK_BUTTON_SECONDARY)
         {
+                cairo_surface_write_to_png (surface);
                 clear_surface ();
                 gtk_widget_queue_draw (widget);
         }
@@ -164,7 +165,7 @@ static void activate (GtkApplication *app,  gpointer user_data)
 
         /* Ask to receive events the drawing area doesn't normally
          * subscribe to. In particular, we need to ask for the
-         * button press and motion notify events that want to handle..c
+         * button press and motion notify events that want to handle
          */
         gtk_widget_set_events (drawing_area, gtk_widget_get_events (drawing_area)
                                | GDK_BUTTON_PRESS_MASK
@@ -175,12 +176,9 @@ static void activate (GtkApplication *app,  gpointer user_data)
         gtk_widget_set_size_request(btn1, 90,40);
         //connect this button
 
-        // align = gtk_alignment_new(0, 0, 0, 1);
         lbl1 = gtk_label_new("Predicted value : ");
         gtk_fixed_put(GTK_FIXED(fixed), lbl1, 25,450);
         gtk_widget_set_size_request(lbl1, 90, 40);
-        // gtk_container_add(GTK_CONTAINER(align), lbl1);
-        // gtk_container_add(GTK_CONTAINER(window), align);
         // g_signal_connect(G_OBJECT(window), "destroy",
         //                  G_CALLBACK(gtk_main_quit), NULL);
 
@@ -194,9 +192,7 @@ static void activate (GtkApplication *app,  gpointer user_data)
         gtk_widget_show_all (window);
 }
 
-int main (int argc,
-          char **argv)
-{
+int main (int argc,char **argv){
         GtkApplication *app;
         int status;
 
@@ -207,5 +203,3 @@ int main (int argc,
 
         return status;
 }
-
-// to run        gcc `pkg-config --cflags gtk+-3.0` -o example example-4.c `pkg-config --libs gtk+-3.0`

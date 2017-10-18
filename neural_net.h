@@ -11,7 +11,8 @@ typedef struct Node {
 								double bias;
 								double output;
 								int wcount;
-								double weights[]; // considered as struct hack in c , we wont specify the array element count but will manually allocate space for
+								double weights[];
+								// considered as struct hack in c , we wont specify the array element count but will manually allocate space for
 } Node;
 
 typedef struct Layer {
@@ -31,33 +32,6 @@ typedef struct Network {
 								double learningRate;
 								Layer layers[];
 } Network;
-
-Network *createNetwork(int inpCount,int hidCount,int outCount){
-								int inpNodeSize  = sizeof(Node);
-								int inpLayerSize = sizeof(Layer) + (inpCount * inpNodeSize);
-
-								int hidWeightsCount = inpCount;
-								int hidNodeSize  =  sizeof(Node) + (hidWeightsCount * sizeof(double));
-								int hidLayerSize = sizeof(Layer) + (hidCount * hidNodeSize);
-
-								int outWeightsCount = hidCount;
-								int outNodeSize  = sizeof(Node) + (outWeightsCount * sizeof(double));
-								int outLayerSize = sizeof(Layer) + (outCount * outNodeSize);
-
-								Network *nn = (Network*)malloc(sizeof(Network) + inpLayerSize + hidLayerSize + outLayerSize);
-
-								nn->inpNodeSize   = inpNodeSize;
-								nn->inpLayerSize  = inpLayerSize;
-								nn->hidNodeSize   = hidNodeSize;
-								nn->hidLayerSize  = hidLayerSize;
-								nn->outNodeSize   = outNodeSize;
-								nn->outLayerSize  = outLayerSize;
-								nn->hidLayerActType = SIGMOID;
-								nn->outLayerActType = SIGMOID;
-								nn->learningRate = 0.5;
-								return nn;
-}
-
 Layer *createInputLayer(int inpCount){
 								int inpNodeSize = sizeof(Node);
 								int inpLayerSize= sizeof(Layer) + (inpCount * inpNodeSize);
@@ -132,6 +106,7 @@ void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 								memcpy(sbptr,ol,nn->outLayerSize);
 								free(ol);
 
+
 }
 
 Layer *getLayer(Network *nn,LayerType ltype){
@@ -170,27 +145,61 @@ Node *getNode(Layer *l, int nodeId) {
 
 //random weights initialization
 
-void initWeights(Network *nn,LayerType ltype){
-								int nodeSize = 0;
-								if(ltype == HIDDEN)
-																nodeSize=nn->hidNodeSize;
-								else
-																nodeSize=nn->outNodeSize;
+void initWeights(Network *nn, LayerType ltype){
 
-								Layer *l = getLayer(nn, ltype);
+    int nodeSize = 0;
+    if (ltype==HIDDEN) nodeSize=nn->hidNodeSize;
+                  else nodeSize=nn->outNodeSize;
 
-								uint8_t *sbptr = (uint8_t*) l->nodes;
+    Layer *l = getLayer(nn, ltype);
 
-								for (int o=0; o<l->ncount; o++) {
+    uint8_t *sbptr = (uint8_t*) l->nodes;
 
-																Node *n = (Node *)sbptr;
-																for (int i=0; i<n->wcount; i++) {
-																								n->weights[i] = rand()/(double)(RAND_MAX);
-																}
-																// init bias weight
-																n->bias =  rand()/(double)(RAND_MAX);
+    for (int o=0; o<l->ncount;o++){
 
-																sbptr += nodeSize;
-								}
+        Node *n = (Node *)sbptr;
 
+        for (int i=0; i<n->wcount; i++){
+            n->weights[i] = 0.7*(rand()/(double)(RAND_MAX));
+            if (i%2) n->weights[i] = -n->weights[i];  // make half of the weights negative
+        }
+
+        // init bias weight
+        n->bias =  rand()/(double)(RAND_MAX);
+        if (o%2) n->bias = -n->bias;  // make half of the bias weights negative
+
+        sbptr += nodeSize;
+    }
+
+}
+Network *createNetwork(int inpCount,int hidCount,int outCount){
+								int inpNodeSize  = sizeof(Node);
+								int inpLayerSize = sizeof(Layer) + (inpCount * inpNodeSize);
+
+								int hidWeightsCount = inpCount;
+								int hidNodeSize  =  sizeof(Node) + (hidWeightsCount * sizeof(double));
+								int hidLayerSize = sizeof(Layer) + (hidCount * hidNodeSize);
+
+								int outWeightsCount = hidCount;
+								int outNodeSize  = sizeof(Node) + (outWeightsCount * sizeof(double));
+								int outLayerSize = sizeof(Layer) + (outCount * outNodeSize);
+
+								Network *nn = (Network*)malloc(sizeof(Network) + inpLayerSize + hidLayerSize + outLayerSize);
+
+								nn->inpNodeSize   = inpNodeSize;
+								nn->inpLayerSize  = inpLayerSize;
+								nn->hidNodeSize   = hidNodeSize;
+								nn->hidLayerSize  = hidLayerSize;
+								nn->outNodeSize   = outNodeSize;
+								nn->outLayerSize  = outLayerSize;
+								nn->hidLayerActType = SIGMOID;
+								nn->outLayerActType = SIGMOID;
+								nn->learningRate = 0.2;
+
+								initNetwork(nn, inpCount, hidCount, outCount);
+
+								initWeights(nn,HIDDEN);
+								initWeights(nn,OUTPUT);
+
+								return nn;
 }

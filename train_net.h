@@ -61,15 +61,6 @@ void updateNodeWeights(Network *nn, LayerType ltype, int id, double error){
 
 }
 
-
-
-
-/**
- * @brief Back propagates network error to hidden layer
- * @param nn A pointer to the NN
- * @param targetClassification Correct classification (=label) of the input stream
- */
-
 void backPropagateHiddenLayer(Network *nn, int targetClassification){
 
         Layer *ol = getLayer(nn, OUTPUT);
@@ -96,13 +87,8 @@ void backPropagateHiddenLayer(Network *nn, int targetClassification){
 
                 updateNodeWeights(nn, HIDDEN, h, hiddenErrorSignal);
         }
-
 }
-/**
- * @brief Back propagates network error in output layer
- * @param nn A pointer to the NN
- * @param targetClassification Correct classification (=label) of the input stream
- */
+
 
 void backPropagateOutputLayer(Network *nn, int targetClassification){
 

@@ -40,16 +40,6 @@ void clearScreen(){
     printf("\e[1;1H\e[2J");
 }
 
-
-Vector *getVectorFromImage(MNIST_Image *img){
-        Vector *v = (Vector*)malloc(sizeof(Vector)+(28*28*sizeof(double)));
-        v->size = 28*28;
-        for(int i = 0; i <v->size; i++) {
-                v->vals[i] = img->pixel[i] ? 1 : 0;
-        }
-        return v;
-}
-
 uint32_t flipBytes(uint32_t n){
 
         uint32_t b0,b1,b2,b3;
