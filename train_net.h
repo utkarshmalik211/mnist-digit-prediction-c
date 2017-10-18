@@ -1,13 +1,5 @@
 #include <math.h>
 
-
-/**
- * @brief Returns the result of applying the given outputValue to the derivate of the activation function
- * @param nn A pointer to the NN
- * @param ltype Type of layer (INPUT, HIDDEN, OUTPUT)
- * @param outVal Output value that is to be back propagated
- */
-
 double getActFctDerivative(Network *nn, LayerType ltype, double outVal){
 
         double dVal = 0;
@@ -21,17 +13,6 @@ double getActFctDerivative(Network *nn, LayerType ltype, double outVal){
 
         return dVal;
 }
-
-
-
-
-/**
- * @brief Updates a node's weights based on given error
- * @param nn A pointer to the NN
- * @param ltype Type of layer (INPUT, HIDDEN, OUTPUT)
- * @param id Sequential id of the node that is to be calculated
- * @param error The error (difference between desired output and actual output
- */
 
 void updateNodeWeights(Network *nn, LayerType ltype, int id, double error){
 
@@ -108,11 +89,8 @@ void backPropagateOutputLayer(Network *nn, int targetClassification){
         }
 
 }
-/**
- * @brief Back propagates network error from output layer to hidden layer
- * @param nn A pointer to the NN
- * @param targetClassification Correct classification (=label) of the input stream
- */
+
+
 void backPropagateNetwork(Network *nn, int targetClassification){
 
         backPropagateOutputLayer(nn, targetClassification);
@@ -121,15 +99,6 @@ void backPropagateNetwork(Network *nn, int targetClassification){
 
 }
 
-
-
-
-/**
- * @brief Performs an activiation function (as defined in the NN's defaults) to a specified node
- * @param nn A pointer to the NN
- * @param ltype Type of layer (INPUT, HIDDEN, OUTPUT)
- * @param id Sequential id of the node that is to be calculated
- */
 
 void activateNode(Network *nn, LayerType ltype, int id){
 
@@ -146,15 +115,6 @@ void activateNode(Network *nn, LayerType ltype, int id){
 
 }
 
-
-
-
-/**
- * @brief Calculates the output value of a specified node by multiplying all its weights with the previous layer's outputs
- * @param nn A pointer to the NN
- * @param ltype Type of layer (INPUT, HIDDEN, OUTPUT)
- * @param id Sequential id of the node that is to be calculated
- */
 
 void calcNodeOutput(Network *nn, LayerType ltype, int id){
 
@@ -189,13 +149,6 @@ void calcNodeOutput(Network *nn, LayerType ltype, int id){
 
 
 
-
-/**
- * @brief Calculates the output values of a given NN layer
- * @param nn A pointer to the NN
- * @param ltype Type of layer (INPUT, HIDDEN, OUTPUT)
- */
-
 void calcLayer(Network *nn, LayerType ltype){
         Layer *l;
         l = getLayer(nn, ltype);
@@ -209,24 +162,11 @@ void calcLayer(Network *nn, LayerType ltype){
 
 
 
-/**
- * @brief Feeds input layer values forward to hidden to output layer (calculation and activation fct)
- * @param nn A pointer to the NN
- */
-
 void feedForwardNetwork(Network *nn){
         calcLayer(nn, HIDDEN);
         calcLayer(nn, OUTPUT);
 }
 
-
-
-
-/**
- * @brief Feeds some Vector data into the INPUT layer of the NN
- * @param nn A pointer to the NN
- * @param v A pointer to a vector
- */
 
 void feedInput(Network *nn, Vector *v) {
 
