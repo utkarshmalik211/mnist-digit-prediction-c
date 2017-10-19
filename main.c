@@ -6,6 +6,8 @@
 
 // include maths functions
 #include <math.h>
+// include graphics lib
+#include <gtk/gtk.h>
 
 //include neural network functions
 #include "neural_net.h"
@@ -14,6 +16,8 @@
 
 //include image Processing
 #include "preprocess_image.h"
+
+#include "gui.h"
 
 void displayProgress(float iter,float total){
 								char c[101];
@@ -78,7 +82,7 @@ void testNet(Network *nn){
 }
 
 void main(int argc, char *argv[]){
-
+								opengui(argc, argv);
 								Network *nn = createNetwork(28*28,20,10);
 								clearScreen();
 								trainNet(nn);
@@ -88,4 +92,5 @@ void main(int argc, char *argv[]){
 								feedInput(nn,image);
 								feedForwardNetwork(nn);
 								printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
+
 }
