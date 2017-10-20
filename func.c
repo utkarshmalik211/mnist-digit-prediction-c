@@ -24,7 +24,7 @@
 // include gui code that uses functions from above files
 #include "func/gui.h"
 
-void main(int argc, char *argv[]){
+void func(int argc, char *argv[]){
 								opengui(argc, argv);
 								Network *nn = createNetwork(28*28,20,10);
 								clearScreen();
