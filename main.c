@@ -34,6 +34,7 @@ void main(int argc, char *argv[]){
 								Vector *image = convert_to_MNIST_Image(argv[1]);
 								feedInput(nn,image);
 								feedForwardNetwork(nn);
-								printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
+								// printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
+								printNetworkClassification(nn);
 
 }

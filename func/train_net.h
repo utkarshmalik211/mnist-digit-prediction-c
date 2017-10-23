@@ -195,7 +195,7 @@ int getNetworkClassification(Network *nn){
         for (int i=0; i<l->ncount; i++) {
 
                 Node *on = getNode(l,i);
-
+                // printf("%d node's value is %f\n",i,on->output);
                 if (on->output > maxOut) {
                         maxOut = on->output;
                         maxInd = i;
@@ -203,4 +203,38 @@ int getNetworkClassification(Network *nn){
         }
 
         return maxInd;
+}
+
+void  printNetworkClassification(Network *nn){
+        Layer *l = getLayer(nn, OUTPUT);
+
+        double maxOut = 0;
+        int maxInd = 0;
+        int secondMaxInd = 0;
+        for (int i=0; i<l->ncount; i++) {
+
+                Node *on = getNode(l,i);
+                // printf("%d node's value is %f\n",i,on->output);
+                if (on->output > maxOut) {
+                        maxOut = on->output;
+                        maxInd = i;
+                }
+        }
+        for (int i=0; i<l->ncount; i++) {
+
+                if(i!=maxInd) {
+                        Node *on = getNode(l,i);
+                        // printf("%d node's value is %f\n",i,on->output);
+                        if (on->output > maxOut) {
+                                maxOut = on->output;
+                                secondMaxInd = i;
+                        }
+                }
+        }
+        if(getNode(l,maxInd)->output < 0.7){
+          printf("Predicted\t%d with probability of %f\nPredicted\t%d with probability of %f\n",maxInd,getNode(l,maxInd)->output,secondMaxInd,getNode(l,secondMaxInd)->output);
+        }
+        else{
+          printf("Predicted\t%d with probability of %f\n",maxInd,getNode(l,maxInd)->output);
+        }
 }

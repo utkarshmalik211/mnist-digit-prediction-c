@@ -16,7 +16,7 @@ typedef struct MNIST_Image MNIST_Image;
 typedef uint8_t MNIST_Label;
 
 typedef struct MNIST_Image {
-        uint8_t pixel[28*28];
+        uint8_t pixel[MNIST_IMG_WIDTH*MNIST_IMG_HEIGHT];
 }  MNIST_Image;
 
 typedef struct MNIST_ImageFileHeader {
@@ -37,7 +37,7 @@ typedef struct Vector {
 } Vector;
 
 void clearScreen(){
-    printf("\e[1;1H\e[2J");
+        printf("\e[1;1H\e[2J");
 }
 
 uint32_t flipBytes(uint32_t n){
