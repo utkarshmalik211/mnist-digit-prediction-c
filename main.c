@@ -25,18 +25,18 @@
 #include "func/gui.h"
 
 void main(int argc, char *argv[]){
-								opengui(argc, argv);
 								Network *nn = createNetwork(28*28,20,10);
 								clearScreen();
-								trainNet(nn);
-								trainNet(nn);
+								for(int i=0; i<10; i++) {trainNet(nn);
+																																	testNet(nn);}
 
-								testNet(nn);
-
-								Vector *image = convert_to_MNIST_Image(argv[1]);
-								feedInput(nn,image);
-								feedForwardNetwork(nn);
-								// printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
-								printNetworkClassification(nn);
+								while(TRUE) {
+																opengui(argc, argv);
+																Vector *image = convert_to_MNIST_Image("test_pics/temp.png");
+																feedInput(nn,image);
+																feedForwardNetwork(nn);
+																// printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
+																printNetworkClassification(nn);
+								}
 
 }

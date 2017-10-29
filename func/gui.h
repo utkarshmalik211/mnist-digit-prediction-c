@@ -1,7 +1,7 @@
 #include <string.h>
-   #include <gtk/gtk.h>
+#include <gtk/gtk.h>
 
-  static GtkWidget *window = NULL;
+static GtkWidget *window = NULL;
 
 /*!
 * \brief Pixmap to scribble area, to store our scribbles
@@ -53,7 +53,7 @@ static gboolean scribble_expose_event (GtkWidget *widget, GdkEventExpose *event,
  cairo_set_source_surface (cr, surface, 0, 0);
  gdk_cairo_rectangle (cr, &event->area);
  cairo_fill (cr);
-
+ cairo_surface_write_to_png (surface, "test_pics/temp.png");
  cairo_destroy (cr);
 
  return FALSE;
@@ -165,7 +165,7 @@ static gboolean scribble_expose_event (GtkWidget *widget, GdkEventExpose *event,
        window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
        //gtk_window_set_screen (GTK_WINDOW (window), gtk_widget_get_screen (do_widget));
        gtk_window_set_title (GTK_WINDOW (window), "Drawing Area");
-       gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+       gtk_window_set_default_size(GTK_WINDOW(window), 560, 560);
 
        g_signal_connect (G_OBJECT(window), "destroy", G_CALLBACK (close_window), NULL);
 
@@ -231,4 +231,5 @@ static gboolean scribble_expose_event (GtkWidget *widget, GdkEventExpose *event,
      do_drawingarea();
 
      gtk_main();
+
    }

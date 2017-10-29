@@ -194,7 +194,7 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
 								nn->outLayerSize  = outLayerSize;
 								nn->hidLayerActType = SIGMOID;
 								nn->outLayerActType = SIGMOID;
-								nn->learningRate = 0.2;
+								nn->learningRate = 0.35;
 
 								initNetwork(nn, inpCount, hidCount, outCount);
 
