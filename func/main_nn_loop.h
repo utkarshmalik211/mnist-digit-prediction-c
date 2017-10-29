@@ -52,7 +52,7 @@ void testNet(Network *nn){
 																if(lbl!=getNetworkClassification(nn)) {
 																								count--;
 																}
-																// backPropagateNetwork(nn,(int) lbl);
+																backPropagateNetwork(nn,(int) lbl);
 																displayProgress(i,MNIST_MAX_TESTING_IMAGES);
 								}
 								printf("\nTrain set accuracy achieved = %d percent	\n",(count/100));

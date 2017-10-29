@@ -29,6 +29,8 @@ void main(int argc, char *argv[]){
 								Network *nn = createNetwork(28*28,20,10);
 								clearScreen();
 								trainNet(nn);
+								trainNet(nn);
+
 								testNet(nn);
 
 								Vector *image = convert_to_MNIST_Image(argv[1]);
