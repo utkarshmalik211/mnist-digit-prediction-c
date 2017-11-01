@@ -9,8 +9,8 @@ double getActFctDerivative(Network *nn, LayerType ltype, double outVal){
         else actFct = nn->outLayerActType;
 
         if (actFct==TANH) dVal = 1-pow(tanh(outVal),2);
-        else dVal = outVal * (1-outVal);
-
+        else if(actFct==SIGMOID) dVal = outVal * (1-outVal);
+        else if(actFct==RELU) dVal = 1 / (1 + pow(M_E,-outVal));
         return dVal;
 }
 
@@ -111,7 +111,9 @@ void activateNode(Network *nn, LayerType ltype, int id){
         else actFct = nn->outLayerActType;
 
         if (actFct==TANH) n->output = tanh(n->output);
-        else n->output = 1 / (1 + (exp((double)(0-(n->output)))) );
+        else if(actFct==SIGMOID) n->output = 1 / (1 + (exp((double)(0-(n->output)))) );
+        else if(actFct==RELU) n->output =   log(1 + pow(M_E,n->output));
+
 
 }
 

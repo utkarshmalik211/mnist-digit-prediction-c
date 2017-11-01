@@ -1,14 +1,18 @@
-void displayProgress(float iter,float total){
-								char c[101];
-								float point = (iter/(total-1))*100;
+void displayProgress(float iter,float total,int epoch,int class){
+								char c[21];
+								float point = ((iter/(total-1))*100)/5;
 								for(int i = 0; i < point; i++) {
-																c[i]='#';
+																c[i]='=';
 								}
-								for(int i = point; i < 100; i++) {
-																c[i]='-';
+								c[(int)point]='>';
+								for(int i = point+1; i < 20; i++) {
+																c[i]=' ';
 								}
-								c[100]='\0';
-								printf("|%s|\r",c);
+								c[20]='\0';
+								if(class == 0)
+																printf("\rTraining Network epoch(%d)|%s|",epoch,c);
+								else
+																printf("\rTesting Network epoch(%d) |%s|",epoch,c);
 }
 
 Vector *getVectorFromImage(MNIST_Image *img){
@@ -20,10 +24,9 @@ Vector *getVectorFromImage(MNIST_Image *img){
 								return v;
 }
 
-void trainNet(Network *nn){
+void trainNet(Network *nn,int epoch){
 								FILE *trainImageFile = openMNISTImageFile(MNIST_TRAINING_SET_IMAGE_FILE_NAME);
 								FILE *trainLableFile = openMNISTLabelFile(MNIST_TRAINING_SET_LABEL_FILE_NAME);
-								printf("Training Network : \n");
 								int count = 0;
 								for (int i = 0; i < MNIST_MAX_TRAINING_IMAGES; i++) {
 																MNIST_Image img = getImage(trainImageFile);
@@ -32,16 +35,14 @@ void trainNet(Network *nn){
 																feedInput(nn,image);
 																feedForwardNetwork(nn);
 																backPropagateNetwork(nn,(int) lbl);
-																displayProgress(i,MNIST_MAX_TRAINING_IMAGES);
+																displayProgress(i,MNIST_MAX_TRAINING_IMAGES,epoch,0);
 								}
-								printf("\n");
 								fclose(trainLableFile);
 								fclose(trainImageFile);
 }
-void testNet(Network *nn){
+void testNet(Network *nn,int epoch){
 								FILE *trainImageFile = openMNISTImageFile(MNIST_TESTING_SET_IMAGE_FILE_NAME);
 								FILE *trainLableFile = openMNISTLabelFile(MNIST_TESTING_SET_LABEL_FILE_NAME);
-								printf("Testing Network :\n");
 								int count = MNIST_MAX_TESTING_IMAGES;
 								for (int i = 0; i < MNIST_MAX_TESTING_IMAGES; i++) {
 																MNIST_Image img = getImage(trainImageFile);
@@ -53,9 +54,9 @@ void testNet(Network *nn){
 																								count--;
 																}
 																backPropagateNetwork(nn,(int) lbl);
-																displayProgress(i,MNIST_MAX_TESTING_IMAGES);
+																displayProgress(i,MNIST_MAX_TESTING_IMAGES,epoch,1);
 								}
-								printf("\nTrain set accuracy achieved = %d percent	\n",(count/100));
+								printf("\nTrain accuracy for %d epoch = %d Percent\n",epoch,(count/100));
 								fclose(trainLableFile);
 								fclose(trainImageFile);
 }

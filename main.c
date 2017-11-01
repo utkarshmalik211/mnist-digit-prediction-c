@@ -26,17 +26,23 @@
 
 void main(int argc, char *argv[]){
 								Network *nn = createNetwork(28*28,20,10);
+								int epoch = 13;
 								clearScreen();
-								for(int i=0; i<10; i++) {trainNet(nn);
-																																	testNet(nn);}
-
-								while(TRUE) {
+								for(int i=0; i<epoch; i++) {
+																trainNet(nn,i+1);
+																testNet(nn,i+1);
+								}
+								char c = 'y';
+								while(c=='y') {
 																opengui(argc, argv);
 																Vector *image = convert_to_MNIST_Image("test_pics/temp.png");
 																feedInput(nn,image);
 																feedForwardNetwork(nn);
 																// printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
 																printNetworkClassification(nn);
+																printf("Reopen Drawing Area?(y/n)\n");
+																scanf("%c",&c);
 								}
+								free(nn);
 
 }

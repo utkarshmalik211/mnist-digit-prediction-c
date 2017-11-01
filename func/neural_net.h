@@ -5,7 +5,7 @@
 
 typedef enum LayerType {INPUT, HIDDEN, OUTPUT} LayerType;
 
-typedef enum ActFctType {SIGMOID, TANH} ActFctType;
+typedef enum ActFctType {SIGMOID, TANH, RELU} ActFctType;
 
 typedef struct Node {
 								double bias;
@@ -194,7 +194,7 @@ Network *createNetwork(int inpCount,int hidCount,int outCount){
 								nn->outLayerSize  = outLayerSize;
 								nn->hidLayerActType = SIGMOID;
 								nn->outLayerActType = SIGMOID;
-								nn->learningRate = 0.35;
+								nn->learningRate = 0.1;
 
 								initNetwork(nn, inpCount, hidCount, outCount);
 

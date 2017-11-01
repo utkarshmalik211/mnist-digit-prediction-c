@@ -103,6 +103,13 @@ Vector* convert_to_MNIST_Image(char* path){
         int l,m,p_image[row_z][col_z];
         // printf("%d %d\n",row_z,col_z);
 
+        if(first_0_col > 9){
+          first_0_col=9;
+        }
+        if(last_0_col < 18){
+          last_0_col = 18;
+        }
+        printf("\n%d %d %d %d\n",first_0_row,last_0_row,first_0_col,last_0_col);
         for(int i=first_0_row; i<=last_0_row; i++) {
                 for(int j=first_0_col; j<=last_0_col; j++) {
                         l=i-first_0_row; m=j-first_0_col;
