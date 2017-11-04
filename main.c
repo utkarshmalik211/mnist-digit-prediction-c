@@ -25,8 +25,8 @@
 #include "func/gui.h"
 
 void main(int argc, char *argv[]){
-								Network *nn = createNetwork(28*28,100,10);
-								int epoch = 5;
+								Network *nn = createNetwork(28*28,20,10);
+								int epoch = 1;
 								clearScreen();
 								for(int i=0; i<epoch; i++) {
 																trainNet(nn,i+1);
@@ -37,11 +37,8 @@ void main(int argc, char *argv[]){
 								char c = 'y',temp;
 								while(c=='y') {
 																opengui(argc, argv);
-																Vector *image = convert_to_MNIST_Image("test_pics/temp.png");
-																feedInput(nn,image);
-																feedForwardNetwork(nn);
-																// printf("Predicted output for above image is : %d\n",getNetworkClassification(nn));
-																printNetworkClassification(nn);
+																convert_to_MNIST_Image(nn,"test_pics/temp.png");
+
 																printf("Reopen Drawing Area?(y/n)\n");
 																scanf("%c",&c);
 																scanf("%c",&temp);

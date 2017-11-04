@@ -207,6 +207,26 @@ int getNetworkClassification(Network *nn){
         return maxInd;
 }
 
+char getNetworkClassification_char(Network *nn){
+
+        Layer *l = getLayer(nn, OUTPUT);
+        char c;
+        double maxOut = 0;
+        int maxInd = 0;
+
+        for (int i=0; i<l->ncount; i++) {
+
+                Node *on = getNode(l,i);
+                // printf("%d node's value is %f\n",i,on->output);
+                if (on->output > maxOut) {
+                        maxOut = on->output;
+                        maxInd = i;
+                }
+        }
+        c=(char) maxInd;
+        return c;
+}
+
 void  printNetworkClassification(Network *nn){
         Layer *l = getLayer(nn, OUTPUT);
 

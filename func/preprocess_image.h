@@ -2,11 +2,49 @@
 #include <cv.h>
 #include <highgui.h>
 
+char getint(int a){
+        char c;
+        switch(a) {
+        case 0:
+                c='0';
+                break;
 
-Vector* convert_to_MNIST_Image(char* path){
+        case 1:
+                c='1';
+                break;
+        case 2:
+                c='2';
+                break;
+        case 3:
+                c='3';
+                break;
+        case 4:
+                c='4';
+                break;
+        case 5:
+                c='5';
+                break;
+        case 6:
+                c='6';
+                break;
+        case 7:
+                c='7';
+                break;
+        case 8:
+                c='8';
+                break;
+        case 9:
+                c='9';
+                break;
+        }
+        return c;
+
+}
+void convert_to_MNIST_Image(Network* nn,char* path){
         int height,width,step,channels;
         uchar *data;
-        int b[28*28],c[28][28];
+        CvFont font;
+        cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 1, 1,0.5,1,8);
         IplImage* cc_img = cvLoadImage(path, CV_LOAD_IMAGE_GRAYSCALE);
         IplImage* src = cvLoadImage(path, CV_LOAD_IMAGE_GRAYSCALE);
         IplImage* cc_img_th_in = cvLoadImage(path, CV_LOAD_IMAGE_GRAYSCALE);;
@@ -17,17 +55,15 @@ Vector* convert_to_MNIST_Image(char* path){
         cvDilate(cc_img, cc_img,NULL,1 );
         // edges returned by Canny might have small gaps between them, which causes some problems during contour detection
         // Simplest way to solve this s to "dilate" the image.
-        double t = cvThreshold(src,cc_img,90,255,0);
-
+        double t = cvThreshold(src,cc_img,140,255,0);
+        // cvAdaptiveThreshold(src,cc_img, 170, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY,3, 5 );
         height    = cc_img->height;
         width     = cc_img->width;
         step      = cc_img->widthStep;
         channels  = cc_img->nChannels;
         data      = (uchar *)cc_img->imageData;
-        printf("Coverting image to a %dx%d...Done\n",height,width);
         int b[28*28],c[28][28];
         // invert the image
-        printf("Inverting image...Done\n");
         for(int i=0; i<height; i++) {
                 for(int j=0; j<width; j++) {
                         for(int k=0; k<channels; k++) {
@@ -46,13 +82,9 @@ Vector* convert_to_MNIST_Image(char* path){
                 CvPoint br = cvPoint(rects[i].x + rects[i].width - 1,rects[i].y + rects[i].height - 1);
 
                 cvSetImageROI(cc_img_th_in, rects[i]);
-                // cvShowImage("Tutorial", cc_img_th_in);
+
                 //cvSaveImage("out.png", cc_img);
-                // cvRectangle(src,tl,br, CV_RGB( 255, 255, 255 ), 1, CV_AA, 0 );
-                // cvWaitKey(0);
-
-
-
+                cvRectangle(src,tl,br, CV_RGB( 0,0,0 ), 1, CV_AA, 0 );
                 IplImage* temp = cvCreateImage(cvSize( 20, 20), cc_img_th_in->depth, cc_img_th_in->nChannels );
                 cvResize(cc_img_th_in,temp,CV_INTER_AREA);
                 height    = temp->height;
@@ -83,28 +115,35 @@ Vector* convert_to_MNIST_Image(char* path){
                                 b[i*28+j]=c[i][j];
                         }
                 }
-
+                Vector *image1 = (Vector*)malloc(sizeof(double)+(sizeof(double)*784));
+                image1->size = 28*28;
+                for(int j=0; j<image1->size; j++) {
+                        image1->vals[j]=b[j];
+                }
+                for(int j=0; j<image1->size; j++) {
+                        if(j%28==0) {
+                                if(j!=0)
+                                        printf("\n");
+                        }
+                        if((int)image1->vals[j]==1) {
+                                printf("%d",(int)image1->vals[j]);
+                        }
+                        else{
+                                printf(" ");
+                        }
+                }
+                printf("\n");
+                feedInput(nn,image1);
+                feedForwardNetwork(nn);
+                int a = getNetworkClassification(nn);
+                char c[2];
+                c[0]=getint(a);
+                c[1]='\0';
+                printf("Predicted output for above image is : %s\n",c);
+                printNetworkClassification(nn);
+                cvPutText(src,&c[0], cvPoint(rects[i].x,rects[i].y-4 /*adjustments*/), &font,cvScalar(0,0,0,0));
                 i++;
         }
-        printf("Padding image to 28x28...Done\n");
-        Vector *image1 = (Vector*)malloc(sizeof(double)+(sizeof(double)*784));
-        image1->size = 28*28;
-        for(int j=0; j<image1->size; j++) {
-                image1->vals[j]=b[j];
-        }
-        for(int j=0; j<image1->size; j++) {
-                if(j%28==0) {
-                        if(j!=0)
-                                printf("\n");
-                }
-                if((int)image1->vals[j]==1) {
-                        printf("%d",(int)image1->vals[j]);
-                }
-                else{
-                        printf(" ");
-                }
-        }
-        printf("\nVectorizing image...Done\n");
-
-        return image1;
+        cvShowImage("Tutorial", src);
+        cvWaitKey(0);
 }
