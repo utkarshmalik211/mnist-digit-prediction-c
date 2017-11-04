@@ -25,14 +25,16 @@
 #include "func/gui.h"
 
 void main(int argc, char *argv[]){
-								Network *nn = createNetwork(28*28,20,10);
-								int epoch = 13;
+								Network *nn = createNetwork(28*28,100,10);
+								int epoch = 5;
 								clearScreen();
 								for(int i=0; i<epoch; i++) {
 																trainNet(nn,i+1);
 																testNet(nn,i+1);
+																// if(i==10||i==15)
+																//         sleep (15);
 								}
-								char c = 'y';
+								char c = 'y',temp;
 								while(c=='y') {
 																opengui(argc, argv);
 																Vector *image = convert_to_MNIST_Image("test_pics/temp.png");
@@ -42,6 +44,7 @@ void main(int argc, char *argv[]){
 																printNetworkClassification(nn);
 																printf("Reopen Drawing Area?(y/n)\n");
 																scanf("%c",&c);
+																scanf("%c",&temp);
 								}
 								free(nn);
 
