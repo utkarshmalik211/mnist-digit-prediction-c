@@ -3,7 +3,7 @@
    Date - 3rd september
  */
 
-typedef enum LayerType {INPUT, HIDDEN, OUTPUT} LayerType;
+typedef enum LayerType {INPUT, HIDDEN ,OUTPUT} LayerType;
 
 typedef enum ActFctType {SIGMOID, TANH, RELU} ActFctType;
 
@@ -25,6 +25,7 @@ typedef struct Network {
 								int inpLayerSize;
 								int hidNodeSize;
 								int hidLayerSize;
+
 								int outNodeSize;
 								int outLayerSize;
 								ActFctType hidLayerActType;
@@ -100,7 +101,7 @@ void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 								memcpy(sbptr,hl,nn->hidLayerSize);
 								free(hl);
 
-								sbptr += nn->hidLayerSize; // move to begining of output layer
+								sbptr += nn->hidLayerSize; // move to begining of hid1 layer
 
 								Layer *ol = createLayer(outCount,hidCount);
 								memcpy(sbptr,ol,nn->outLayerSize);

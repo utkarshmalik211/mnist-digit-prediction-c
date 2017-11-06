@@ -44,7 +44,7 @@ void convert_to_MNIST_Image(Network* nn,char* path){
         int height,width,step,channels;
         uchar *data;
         CvFont font;
-        cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 1, 1,0.5,1,8);
+        cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 1, 1,1,1,8);
         IplImage* cc_img = cvLoadImage(path, CV_LOAD_IMAGE_GRAYSCALE);
         IplImage* src = cvLoadImage(path, CV_LOAD_IMAGE_GRAYSCALE);
         IplImage* cc_img_th_in = cvLoadImage(path, CV_LOAD_IMAGE_GRAYSCALE);;
@@ -52,7 +52,7 @@ void convert_to_MNIST_Image(Network* nn,char* path){
         CvMemStorage *mem;
         mem = cvCreateMemStorage(0);
         CvSeq *contours = 0;
-        cvDilate(cc_img, cc_img,NULL,1 );
+
         // edges returned by Canny might have small gaps between them, which causes some problems during contour detection
         // Simplest way to solve this s to "dilate" the image.
         double t = cvThreshold(src,cc_img,140,255,0);
@@ -72,12 +72,25 @@ void convert_to_MNIST_Image(Network* nn,char* path){
                 }
         }
         cvCopy(cc_img, cc_img_th_in, NULL);
-        int n = cvFindContours( cc_img, mem, &contours, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+        cvDilate(cc_img_th_in, cc_img_th_in,cvCreateStructuringElementEx(3,3,0,0,CV_SHAPE_RECT ,NULL),7);
+        int n = cvFindContours( cc_img_th_in, mem, &contours, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
         int i=0;
         CvSeq* ptr = 0;
         CvRect rects[10];
         for (ptr = contours; ptr != NULL; ptr = ptr->h_next) {
                 rects[i] = cvBoundingRect(ptr,0);
+                double height = rects[i].height;
+                double width = rects[i].width;
+                if (rects[i].width > rects[i].height){
+                    rects[i].height = rects[i].width;
+                    rects[i].y-=(width-height)/2;
+                    rects[i].x-=4;
+                }
+                else{
+                  rects[i].width = rects[i].height;
+                  rects[i].x-=(height-width)/2;
+                  rects[i].y+=4;
+                }
                 CvPoint tl = cvPoint(rects[i].x,rects[i].y);
                 CvPoint br = cvPoint(rects[i].x + rects[i].width - 1,rects[i].y + rects[i].height - 1);
 

@@ -26,22 +26,26 @@
 
 void main(int argc, char *argv[]){
 								Network *nn = createNetwork(28*28,20,10);
-								int epoch = 1;
+								int epoch = 3;
 								clearScreen();
 								for(int i=0; i<epoch; i++) {
 																trainNet(nn,i+1);
 																testNet(nn,i+1);
-																// if(i==10||i==15)
-																//         sleep (15);
 								}
 								char c = 'y',temp;
-								while(c=='y') {
-																opengui(argc, argv);
-																convert_to_MNIST_Image(nn,"test_pics/temp.png");
+								if( argv[1]!=NULL) {
+																convert_to_MNIST_Image(nn,argv[1]);
 
-																printf("Reopen Drawing Area?(y/n)\n");
-																scanf("%c",&c);
-																scanf("%c",&temp);
+								}
+								else{
+																while(c=='y') {
+																								opengui(argc, argv);
+																								convert_to_MNIST_Image(nn,"test_pics/temp.png");
+
+																								printf("Reopen Drawing Area?(y/n)\n");
+																								scanf("%c",&c);
+																								scanf("%c",&temp);
+																}
 								}
 								free(nn);
 
