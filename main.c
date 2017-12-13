@@ -1,4 +1,4 @@
-// include basic c functions
+// include basic c libraries
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h> // contains uint_8 for faster processing of labels
@@ -36,7 +36,8 @@ typedef enum GUITYPE {DRAW, BROWSE} GUITYPE;
 void main(int argc, char *argv[]){
 								GUITYPE GUITYPE;
 								Network *nn = createNetwork(28*28,20,10);
-								int epoch = 3;
+								int epoch = 1;
+								//epoch - no of times it will  train
 								clearScreen();
 								char temp;
 								for(int i=0; i<epoch; i++) {
@@ -54,7 +55,7 @@ void main(int argc, char *argv[]){
 
 																if (choice == 1 ) GUITYPE = DRAW;
 																else if(choice == 2) GUITYPE = BROWSE;
-																else if(choice == 3) printf(" "); //call About
+																else if(choice == 3) system("./about.sh"); //call About
 																else if(choice == 4) break;
 																else {
 																								clearScreen();
@@ -63,11 +64,16 @@ void main(int argc, char *argv[]){
 																}
 																if(GUITYPE == BROWSE) {
 																								open_browse(argc, argv);
+																								//open browse menu
 																								convert_to_MNIST_Image(nn,loc);
+																								//convert the browsed image  to mnist constraints
+
 																}
 																else if(GUITYPE == DRAW) {
 																								opengui(argc, argv);
+																								//open drawing area
 																								convert_to_MNIST_Image(nn,"test_pics/temp.png");
+																								//convert the drawn image  to mnist constraints
 																}
 
 																printf("Reopen?(y/n)");

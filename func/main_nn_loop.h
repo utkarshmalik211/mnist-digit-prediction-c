@@ -1,4 +1,5 @@
-void displayProgress(float iter,float total,int epoch,int class){
+// function to display training progress on Terminal
+void displayProgress(float iter,float total,int epoch,int state){
 								char c[21];
 								float point = ((iter/(total-1))*100)/5;
 								for(int i = 0; i < point; i++) {
@@ -9,12 +10,13 @@ void displayProgress(float iter,float total,int epoch,int class){
 																c[i]=' ';
 								}
 								c[20]='\0';
-								if(class == 0)
+								if(state == 0)
 																printf("\rTraining Network epoch(%d)|%s|",epoch,c);
 								else
 																printf("\rTesting Network epoch(%d) |%s|",epoch,c);
 }
 
+// function to convert image from mnist dataset to a vector of 0's and 1's
 Vector *getVectorFromImage(MNIST_Image *img){
 								Vector *v = (Vector*)malloc(sizeof(Vector)+(MNIST_IMG_WIDTH*MNIST_IMG_HEIGHT*sizeof(double)));
 								v->size = MNIST_IMG_WIDTH*MNIST_IMG_HEIGHT;
@@ -23,7 +25,10 @@ Vector *getVectorFromImage(MNIST_Image *img){
 								}
 								return v;
 }
-
+// main function to train neural network on training dataset 
+// input args : 
+// Network *nn ie pointer to the network on which backpropagation will occur
+// int epoch ie no of time function is training network (mainly used for displaying) 
 void trainNet(Network *nn,int epoch){
 								FILE *trainImageFile = openMNISTImageFile(MNIST_TRAINING_SET_IMAGE_FILE_NAME);
 								FILE *trainLableFile = openMNISTLabelFile(MNIST_TRAINING_SET_LABEL_FILE_NAME);
@@ -40,6 +45,12 @@ void trainNet(Network *nn,int epoch){
 								fclose(trainLableFile);
 								fclose(trainImageFile);
 }
+// main function to testing neural network on training dataset 
+// input args : 
+// Network *nn ie pointer to the network on which backpropagation will occur
+// int epoch ie no of time function is testing network (mainly used for displaying)
+// as above function here backpropagation doesn't occur as testing data set is not used to backpropagate the network
+
 void testNet(Network *nn,int epoch){
 								FILE *trainImageFile = openMNISTImageFile(MNIST_TESTING_SET_IMAGE_FILE_NAME);
 								FILE *trainLableFile = openMNISTLabelFile(MNIST_TESTING_SET_LABEL_FILE_NAME);

@@ -1,23 +1,22 @@
 #include <string.h>
 #include <gtk/gtk.h>
+//include basic C libraries
 
 static GtkWidget *window = NULL;
 
-/*!
- * \brief Pixmap to scribble area, to store our scribbles
- */
+
+//brief Pixmap to scribble area, to store our scribbles
+
 static cairo_surface_t *surface = NULL;
 
 static gboolean scribble_configure_event (GtkWidget*, GdkEventConfigure*, gpointer);
 
-/*!
- * \brief Redraw the screen from the surface
- */
+// brief Redraw the screen from the surface
 static gboolean scribble_expose_event (GtkWidget*, GdkEventExpose*, gpointer);
 
-/*!
- * \brief Draw a rectangle on the screen
- */
+
+//brief Draw a rectangle on the screen
+ 
 static gboolean scribble_configure_event (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
         cairo_t *cr = NULL;
@@ -226,13 +225,22 @@ GtkWidget * do_drawingarea ()
 }
 
 void open_dialog(GtkWidget* button, gpointer window)
+//open main dialog box
+
 {
         GtkWidget *dialog;
         dialog = gtk_file_chooser_dialog_new("Chosse a file", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OK, GTK_RESPONSE_OK, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
+       //GtkFileChooserDialog — A file chooser dialog, suitable for "File/Open" or "File/Save" commands
+        
         gtk_widget_show_all(dialog);
-        gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),"/");
+        //Recursively shows a widget, and any child widgets (if the widget is a container).
+
         gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), g_get_home_dir());
+        // Note that this is the folder that the file chooser is currently displaying
+
         gint resp = gtk_dialog_run(GTK_DIALOG(dialog));
+        // This function enters a recursive main loop and waits for the user to respond to the dialog, returning the response ID corresponding to the button the user clicked
+
         if(resp == GTK_RESPONSE_OK)
         {
                 g_print("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
@@ -241,9 +249,13 @@ void open_dialog(GtkWidget* button, gpointer window)
         else
                 g_print("You pressed Cancel\n");
         gtk_widget_destroy(dialog);
+        //cause the widget to be finalized if no additional references
+
 }
 
 void  opengui(int argc, char *argv[])
+//open the file chooser menu
+
 {
         threshold = 140;
         gtk_disable_setlocale();
@@ -262,8 +274,14 @@ void open_browse(int argc, char *argv[]){
         g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit), NULL);
         button = gtk_button_new_with_label("Browse Image");
         g_signal_connect(button, "clicked", G_CALLBACK(open_dialog), window);
+        //Connect handlers to signals and using a GObject instance as your signal handler user data
+
         gtk_container_set_border_width(GTK_CONTAINER(window), 100);
+        //Sets the border width of the container.
+
         gtk_container_add(GTK_CONTAINER(window), button);
+        // Adds widget to container , setting child properties at the same time. 
+
         gtk_widget_show_all(window);
         gtk_main();
 

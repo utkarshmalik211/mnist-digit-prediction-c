@@ -1,11 +1,17 @@
-/*
-   Author - Utkarsh Malik
-   Date - 3rd september
- */
+//@enum to identify layerType which can be one of following INPUT, HIDDEN ,OUTPUT
 
 typedef enum LayerType {INPUT, HIDDEN ,OUTPUT} LayerType;
 
+//@enum to identify activation function which can be one of following SIGMOID, TANH, RELU
+
 typedef enum ActFctType {SIGMOID, TANH, RELU} ActFctType;
+
+//@struct defining a node which acts as a perceptron to network
+// //Contents :
+// bias - defining bias weights
+// output - outputof node set after calculation
+// wcount - no of weights on links connecting to other nodes in next layer
+// weights[] = value of wieght
 
 typedef struct Node {
 								double bias;
@@ -15,10 +21,16 @@ typedef struct Node {
 								// considered as struct hack in c , we wont specify the array element count but will manually allocate space for
 } Node;
 
+//@struct to define a layer containing nodes 
+
 typedef struct Layer {
 								int ncount;
 								Node nodes[];
 } Layer;
+
+//@struct to define a Network containing array of layers and information related to each layer and there node sizes
+//also houses info related to which activation function is used for each layer,
+//learning rate which defines how large steps gradient descent takes while performing backpropagation
 
 typedef struct Network {
 								int inpNodeSize;
@@ -33,6 +45,9 @@ typedef struct Network {
 								double learningRate;
 								Layer layers[];
 } Network;
+
+//@function to allocate memory for input layer and initializing the layers output  to 0
+//takes input of nodes in inp layer and allocates memmory accordingly 
 Layer *createInputLayer(int inpCount){
 								int inpNodeSize = sizeof(Node);
 								int inpLayerSize= sizeof(Layer) + (inpCount * inpNodeSize);
@@ -49,7 +64,7 @@ Layer *createInputLayer(int inpCount){
 								// single byte pointer is simply a pointer pointing to
 								// memory blocks of byte size 1. I.e. we can easily
 								// move the pointer throughout the address space either by
-								// incrementing it via pointer++
+								// incrementing it by pointer++
 								// or by adding the number of bytes that we want
 
 								for (int i = 0; i < il->ncount; i++) {
@@ -61,6 +76,11 @@ Layer *createInputLayer(int inpCount){
 								return il;
 }
 
+//@function to create hidden and output layers these layers are same as both have input nodes and output nodess
+// different from input layer as input layer nodes do not compute output
+// their output is same as their input
+// this is not the case with other two layers 
+// this takes no of nodes in layer and no of weights required to link 2 layers
 Layer *createLayer(int nodeCount,int weightCount){
 								int nodeSize = sizeof(Node) + (weightCount * sizeof(double));
 								Layer *l = (Layer*)malloc(sizeof(Layer)+(nodeCount*nodeSize));
@@ -87,7 +107,8 @@ Layer *createLayer(int nodeCount,int weightCount){
 }
 
 
-
+//@ function to randomly initialize network with 1 positive and another negetice weight this randrom initialization
+//is necessary af
 void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 
 								Layer *il = createInputLayer(inpCount);
@@ -110,6 +131,7 @@ void initNetwork(Network *nn,int inpCount,int hidCount,int outCount){
 
 }
 
+//this function fetches pointer to the specified layer
 Layer *getLayer(Network *nn,LayerType ltype){
 								Layer *l;
 								switch (ltype) {
@@ -132,7 +154,7 @@ Layer *getLayer(Network *nn,LayerType ltype){
 								}
 								return l;
 }
-
+//this function fetches pointerto a specified node in a specified layer
 Node *getNode(Layer *l, int nodeId) {
 
 								int nodeSize = sizeof(Node) + (l->nodes[0].wcount * sizeof(double));
@@ -173,6 +195,8 @@ void initWeights(Network *nn, LayerType ltype){
     }
 
 }
+
+//create and initialize network and return a pointer to it
 Network *createNetwork(int inpCount,int hidCount,int outCount){
 								int inpNodeSize  = sizeof(Node);
 								int inpLayerSize = sizeof(Layer) + (inpCount * inpNodeSize);

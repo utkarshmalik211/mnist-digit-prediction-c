@@ -1,7 +1,7 @@
-// include opencv
+// include opencv well ignore these 
 #include <cv.h>
 #include <highgui.h>
-
+// function to convert networks classification into char to print it on photos
 char getint(int a){
         char c;
         switch(a) {
@@ -40,6 +40,8 @@ char getint(int a){
         return c;
 
 }
+
+//@function
 void convert_to_MNIST_Image(Network* nn,char* path){
         int height,width,step,channels;
         uchar *data;
@@ -56,6 +58,7 @@ void convert_to_MNIST_Image(Network* nn,char* path){
         // edges returned by Canny might have small gaps between them, which causes some problems during contour detection
         // Simplest way to solve this s to "dilate" the image.
         double t = cvThreshold(src,cc_img,threshold,255,0);
+        // well tried adaptive threshold but it just does'nt work so stickingto normal threshold
         // cvAdaptiveThreshold(src,cc_img, 170, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY,3, 5 );
         height    = cc_img->height;
         width     = cc_img->width;
