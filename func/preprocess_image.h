@@ -55,7 +55,7 @@ void convert_to_MNIST_Image(Network* nn,char* path){
 
         // edges returned by Canny might have small gaps between them, which causes some problems during contour detection
         // Simplest way to solve this s to "dilate" the image.
-        double t = cvThreshold(src,cc_img,140,255,0);
+        double t = cvThreshold(src,cc_img,threshold,255,0);
         // cvAdaptiveThreshold(src,cc_img, 170, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY,3, 5 );
         height    = cc_img->height;
         width     = cc_img->width;

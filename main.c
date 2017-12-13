@@ -4,6 +4,13 @@
 #include <stdint.h> // contains uint_8 for faster processing of labels
 #include <string.h>
 
+// location string
+char *loc;
+//threshhold
+int threshold;
+// gui / browse ??
+typedef enum GUITYPE {DRAW, BROWSE} GUITYPE;
+
 // include maths functions
 #include <math.h>
 
@@ -24,29 +31,49 @@
 // include gui code that uses functions from above files
 #include "func/gui.h"
 
+
+
 void main(int argc, char *argv[]){
+								GUITYPE GUITYPE;
 								Network *nn = createNetwork(28*28,20,10);
-								int epoch = 3;
+								int epoch = 1;
 								clearScreen();
+								char temp;
 								for(int i=0; i<epoch; i++) {
 																trainNet(nn,i+1);
 																testNet(nn,i+1);
 								}
-								char c = 'y',temp;
-								if( argv[1]!=NULL) {
-																convert_to_MNIST_Image(nn,argv[1]);
 
-								}
-								else{
-																while(c=='y') {
+								char c = 'y';
+								while(c == 'y') {
+
+																printf("Input type :\n1.Draw\n2.Browse\n3.About\n4.Exit :(\n");
+																int choice;
+																scanf("%d",&choice);
+																scanf("%c",&temp);
+
+																if (choice == 1 ) GUITYPE = DRAW;
+																else if(choice == 2) GUITYPE = BROWSE;
+																else if(choice == 3) printf(" "); //call About
+																else if(choice == 4) break;
+																else {
+																								clearScreen();
+																								printf("Invalid Choice!\n");
+																								continue;
+																}
+																if(GUITYPE == BROWSE) {
+																								open_browse(argc, argv);
+																								convert_to_MNIST_Image(nn,loc);
+																}
+																else if(GUITYPE == DRAW) {
 																								opengui(argc, argv);
 																								convert_to_MNIST_Image(nn,"test_pics/temp.png");
-
-																								printf("Reopen Drawing Area?(y/n)\n");
-																								scanf("%c",&c);
-																								scanf("%c",&temp);
 																}
+
+																printf("Reopen?(y/n)");
+																scanf("%c",&c);
+																scanf("%c",&temp);
+																clearScreen();
 								}
 								free(nn);
-
 }
