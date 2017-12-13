@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['magicnumber',['magicNumber',['../struct_m_n_i_s_t___image_file_header.html#a3081fb3d81f6a8484b9451a66e4d1dba',1,'MNIST_ImageFileHeader::magicNumber()'],['../struct_m_n_i_s_t___label_file_header.html#a3081fb3d81f6a8484b9451a66e4d1dba',1,'MNIST_LabelFileHeader::magicNumber()']]],
+  ['main',['main',['../main_8c.html#a91a3bbcc7eb26e8695255b2795d6e46f',1,'main.c']]],
+  ['main_2ec',['main.c',['../main_8c.html',1,'']]],
+  ['main_5fnn_5floop_2eh',['main_nn_loop.h',['../main__nn__loop_8h.html',1,'']]],
+  ['maximages',['maxImages',['../struct_m_n_i_s_t___image_file_header.html#a0c2553aeb6074229351ddfd76c613831',1,'MNIST_ImageFileHeader::maxImages()'],['../struct_m_n_i_s_t___label_file_header.html#a0c2553aeb6074229351ddfd76c613831',1,'MNIST_LabelFileHeader::maxImages()']]],
+  ['mnist_5fimage',['MNIST_Image',['../struct_m_n_i_s_t___image.html',1,'MNIST_Image'],['../read__mnist_8h.html#ac86380de7c7c685ea8e992a27f671239',1,'MNIST_Image():&#160;read_mnist.h']]],
+  ['mnist_5fimagefileheader',['MNIST_ImageFileHeader',['../struct_m_n_i_s_t___image_file_header.html',1,'MNIST_ImageFileHeader'],['../read__mnist_8h.html#ab159c22eb44132d35b9c25d1d23875e9',1,'MNIST_ImageFileHeader():&#160;read_mnist.h']]],
+  ['mnist_5fimg_5fheight',['MNIST_IMG_HEIGHT',['../read__mnist_8h.html#a50bba24c079fe75bbae294ba50dbaa32',1,'read_mnist.h']]],
+  ['mnist_5fimg_5fwidth',['MNIST_IMG_WIDTH',['../read__mnist_8h.html#afa9a8f034b6b2dbc4f42ec4281cf2082',1,'read_mnist.h']]],
+  ['mnist_5flabel',['MNIST_Label',['../read__mnist_8h.html#ac563f2337f8e23f2dcc095e41c138bfa',1,'read_mnist.h']]],
+  ['mnist_5flabelfileheader',['MNIST_LabelFileHeader',['../struct_m_n_i_s_t___label_file_header.html',1,'MNIST_LabelFileHeader'],['../read__mnist_8h.html#a5445804de6d58a3726ff543cd3cf1cdb',1,'MNIST_LabelFileHeader():&#160;read_mnist.h']]],
+  ['mnist_5fmax_5ftesting_5fimages',['MNIST_MAX_TESTING_IMAGES',['../read__mnist_8h.html#a4fc27b25f2ac15c55c99bdf4c59f2410',1,'read_mnist.h']]],
+  ['mnist_5fmax_5ftraining_5fimages',['MNIST_MAX_TRAINING_IMAGES',['../read__mnist_8h.html#a0ea148c64cbba94b2d074a069acfd121',1,'read_mnist.h']]],
+  ['mnist_5ftesting_5fset_5fimage_5ffile_5fname',['MNIST_TESTING_SET_IMAGE_FILE_NAME',['../read__mnist_8h.html#ac88cc92111215fbe06eb9918d43f1e00',1,'read_mnist.h']]],
+  ['mnist_5ftesting_5fset_5flabel_5ffile_5fname',['MNIST_TESTING_SET_LABEL_FILE_NAME',['../read__mnist_8h.html#ab5fd6cc8cfbb6c18e24e24e046816f50',1,'read_mnist.h']]],
+  ['mnist_5ftraining_5fset_5fimage_5ffile_5fname',['MNIST_TRAINING_SET_IMAGE_FILE_NAME',['../read__mnist_8h.html#ad46661079c809c87a6417a2831b1f33a',1,'read_mnist.h']]],
+  ['mnist_5ftraining_5fset_5flabel_5ffile_5fname',['MNIST_TRAINING_SET_LABEL_FILE_NAME',['../read__mnist_8h.html#a37971d2433c703aebccf946f2cf1a10a',1,'read_mnist.h']]]
+];

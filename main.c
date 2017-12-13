@@ -36,7 +36,7 @@ typedef enum GUITYPE {DRAW, BROWSE} GUITYPE;
 void main(int argc, char *argv[]){
 								GUITYPE GUITYPE;
 								Network *nn = createNetwork(28*28,20,10);
-								int epoch = 1;
+								int epoch = 3;
 								clearScreen();
 								char temp;
 								for(int i=0; i<epoch; i++) {
